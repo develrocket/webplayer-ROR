@@ -1,0 +1,99 @@
+class @Home
+
+  define_event:  ->
+    # nice select
+    $("select#detach_switcher").niceSelect()
+    # check new visitor
+
+    # go map click event
+    $("button.exterior-switcher").click ->
+      tmpHtml1 = "<span class='go-home-icon'><img src='<%= image_path('interior-icon.png')%>'
+        class='img-responsive full-width'></span><span class='switcher-text'>Go Interior</span>"
+      tmpHtml2 = "<span class='go-home-icon'><img src='<%= image_path('exterior-icon.png')%>'
+        class='img-responsive full-width'></span><span class='switcher-text'>Go Exterior</span>"
+
+      if $(this).find('span.switcher-text').text() == 'Go Interior' then $(this).html(tmpHtml2) else $(this).html(tmpHtml1)
+
+      $('div.interior-container').toggleClass('hide', 500, ->
+        if $('div.interior-container').hasClass('hide')
+          if $('#exterior_iframe').length
+            $('div.exterior-container').removeClass('hide',  100, 'easeOutCubic')
+          else $('div.map-container').removeClass('hide', 100, 'easeOutCubic', ->
+            initMap()
+          )
+        else $('div.exterior-container, div.map-container').removeClass('hide').addClass('hide', 500)
+      )
+
+
+    # aerial view event
+    $("button.aerial-view").click ->
+      $(this).removeClass('selected').addClass('selected')
+      $("button.bird-view").removeClass('selected')
+      if map.getTilt()
+        map.setTilt(0)
+
+    # bird view event
+    $("button.bird-view").click ->
+      $(this).removeClass('selected').addClass('selected')
+      $("button.aerial-view").removeClass('selected')
+      #    heading = map.getHeading() || 0
+      map.setHeading(90)
+      map.setTilt(45)
+
+    # agent branding hide show click event
+    $("a#hide-agent-branding").click (e) ->
+      e.preventDefault()
+      $("div.show-branding").toggle('fast')
+      $(this).toggleClass('position-absolute')
+      $(this).find('i').toggleClass("fa-angle-right fa-angle-left")
+
+    # tour address click event show / hide
+    $("div#title-toggle").click (e) ->
+      e.preventDefault()
+      $("div#title-container").toggle('slide', { direction: "left" }, 500)
+
+
+    # dollhouse icon on exterior
+    $("div#gui-modes-map a").click ->
+      if !$('div.interior-container').hasClass('hide')
+        $('div.interior-container').addClass('hide', 500, 'easeOutCubic')
+
+      $('div.exterior-container').toggleClass('hide', 500, 'easeOutCubic')
+      $('div.map-container').removeClass('hide', 100, 'easeOutCubic', ->
+        initMap()
+      )
+
+    # tour home icon on map
+    $("div#gui-modes-exterior a").click ->
+      if !$('div.interior-container').hasClass('hide')
+        $('div.interior-container').addClass('hide', 500, 'easeOutCubic')
+
+      $('div.map-container').addClass('hide', 500, 'easeOutCubic')
+
+      if $('#exterior_iframe').length
+        $('div.exterior-container').removeClass('hide',  500, 'easeOutCubic')
+      else $('div.interior-container').removeClass('hide', 500, 'easeOutCubic')
+
+    # detach unit click event is added for
+    $('select#detach_switcher').on 'change', ->
+      unit_id = $(this).val()
+      if Number(unit_id) == 0 and $('iframe#interior_iframe').hasClass('hide')
+        $('iframe#interior_iframe').toggleClass('hide', 500, 'easeOutCubic')
+        $('iframe#detach_iframe').each ->
+          if !$(this).hasClass('hide')
+            $(this).toggleClass('hide', 500, 'easeOutCubic')
+      else
+        $('iframe#detach_iframe').each ->
+          $(this).toggleClass('hide', 500, 'easeOutCubic') if !$(this).hasClass('hide')
+          if Number($(this).data('unit_id')) == Number(unit_id)
+            $('iframe#interior_iframe').toggleClass('hide', 500, 'easeOutCubic') if !$('iframe#interior_iframe').hasClass('hide')
+            $(this).toggleClass('hide', 500, 'easeOutCubic')
+      return
+
+    # advertising layer remove
+    $('a.close-advertising').click (e) ->
+      e.preventDefault()
+      $('div#advertising-layer').fadeOut('slow', ->
+        $(this).remove()
+      )
+      return

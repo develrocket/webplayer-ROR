@@ -1,0 +1,10 @@
+= render :partial => 'backend/navbar'
+#page-wrapper.gray-bg
+  = render :partial => 'backend/topbar'
+  = render :partial => 'backend/client/page_topbar'
+
+  .wrapper.wrapper-content.animated.fadeInRight
+    .ibox.float-e-margins
+      = render :partial => 'backend/client/webplayer_tabs'
+      .ibox-content.custom.form-horizontal
+        = render :partial => 'backend/client/webplayer_basic/webplayer_basic'

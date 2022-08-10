@@ -1,0 +1,23 @@
+/ page top bar section
+.row.wrapper.border-bottom.white-bg.page-heading.m-b-md
+  .col-lg-10
+    h2= @tab_name
+    ol.breadcrumb
+      li
+        a href="#"  Home
+      li.active
+        a href="#"
+          strong= @tab_name
+
+/ iframe preview section
+.row
+  .col-sm-6
+    iframe#interior_iframe height="280" src="#{iframe_home_index_path(@tour.id)}" width="500" style='padding-left: 10px' error!
+
+.result-notice
+
+/ show notice preview section
+- if flash[:notice]
+  .alert.alert-info.custom-alert-margin
+    = flash[:notice]
+

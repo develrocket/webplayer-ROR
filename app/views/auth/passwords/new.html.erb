@@ -1,0 +1,18 @@
+<div class="middle-box text-center loginscreen  animated fadeInDown" style="margin-top: -100px;">
+    <h2>Forgot your password?</h2>
+
+    <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+      <%= devise_error_messages! %>
+
+      <div class="form-group">
+        <%= f.label 'Please enter your email' %><br />
+        <%= f.email_field :email, :class => 'form-control', autofocus: true %>
+      </div>
+
+      <div class="actions">
+        <%= f.submit "Send reset password", :class => 'btn btn-primary' %>
+      </div>
+    <% end %>
+
+    <%= render "auth/shared/links" %>
+</div>

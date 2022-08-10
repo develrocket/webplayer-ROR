@@ -1,0 +1,16 @@
+#= require jquery-ui
+#= require jquery.nice-select
+
+main = new Home()
+
+ready = ->
+  main.define_event()
+  return
+
+
+# string empty or undefined, null check
+isEmpty = (str) ->
+  typeof str == 'string' && !str.trim() || typeof str == 'undefined' || str == null
+
+$(document).ready(ready);
+$(document).on('page:load', ready);

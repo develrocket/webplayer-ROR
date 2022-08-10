@@ -1,0 +1,10 @@
+// Place all the styles related to the backend/client/AgentBranding controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+.avatar-preview {
+  margin-bottom: 20px;
+}
+.avatar-preview img {
+  height: auto;
+  max-height: 500px;
+}

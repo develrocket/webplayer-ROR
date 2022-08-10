@@ -1,0 +1,11 @@
+ul.nav.nav-tabs.custom
+  li class="#{currentPage('backend/admin')}"
+    = link_to "Main", client_edit_ajax_path, :rel => 'client'
+  - unless current_admin.super?
+    li
+      = link_to "Account", client_account_edit_ajax_path, :rel => 'account'
+  li
+    = link_to "Notification", notification_index_path, :rel => 'notification'
+  - if !current_admin.super? and current_admin.agent_type.to_i == 3
+    li
+      = link_to "Agents List", agents_list_path, :rel => 'agents_list'

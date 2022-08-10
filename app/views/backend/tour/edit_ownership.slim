@@ -1,0 +1,41 @@
+= form_for(@tour, :url => @store_path, data: { type: :json }, :html => {:class => 'form-horizontal edit-ownership', :multipart => true}, remote: true) do |f|
+  .form-group
+    = f.label :admin_id, "Assign to Client", :class => 'control-label col-sm-3'
+    .col-sm-9
+      = f.select :admin_id, Admin.where(super:false).collect { |p| [ p.username, p.id ] }, {include_blank: true} , {:class => 'form-control'}
+  .form-group
+    = f.label "Control Panel Authority", :class => 'control-label col-sm-3'
+    .col-sm-9
+      .checkbox
+        label
+          = f.check_box :is_tour_branding
+          | Tour Branding
+      .checkbox
+        label
+          = f.check_box :is_agent_branding
+          | Agent Branding
+      .checkbox
+        label
+          = f.check_box :is_display_contents
+          | Display Contents
+      .checkbox
+        label
+          = f.check_box :is_restriction_option
+          | Restriction Option
+      .checkbox
+        label
+          = f.check_box :is_data_log
+          | Data Log
+      .checkbox
+        label
+          = f.check_box :is_statistic
+          | Statistic
+  .hr-line-dashed
+  .form-group
+    .col-sm-offset-2.col-sm-10.text-right
+      = button_tag(type: 'submit', class: "btn btn-primary") do
+        i.fa.fa-check-circle
+        |  Save & Update
+
+coffee:
+  new TourOwnership

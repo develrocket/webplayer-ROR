@@ -1,0 +1,14 @@
+doctype html
+html
+  head
+    meta content=("text/html; charset=UTF-8") http-equiv="Content-Type"
+  body
+    h1
+      | Hi #{@admin.username}, Congratulations!
+    h4
+      |  Your account has been created on #{@admin.created_at.to_date}
+      br
+      | Please login to account
+    - unless @admin.notification.additional_email_content.blank?
+      h3 Additional Information
+      h5 #{@admin.notification.additional_email_content.html_safe}

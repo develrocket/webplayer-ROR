@@ -1,0 +1,62 @@
+= form_for(@tour, :url => @store_path, :html => {:class => 'form-horizontal', multipart: true}) do |f|
+  = fields_for :restrict_option, @tour.restrict_option do |f|
+    .form-group
+      = f.label "Restrict Showing", :class => 'col-sm-2 control-label'
+      .col-sm-3
+        ul.list-group
+          li.list-group-item.no-borders
+            = f.check_box :walkintour, :class => 'i-checks'
+            span.m-l-xs 3D WALKINTOUR
+          li.list-group-item.no-borders
+            = f.check_box :google45_imagery, :class => 'i-checks'
+            span.m-l-xs Google 45 &deg;
+          li.list-group-item.no-borders
+            = f.check_box :exterior_walkin, :class => 'i-checks'
+            span.m-l-xs Exterior WALKINTOUR
+          li.list-group-item.no-borders
+            = f.check_box :detach_unit, :class => 'i-checks'
+            span.m-l-xs Detach Unit
+      .col-sm-5
+        label.control-label.col-sm-6 After Reviewing(sec)
+        .input-group#review_second.col-sm-4
+          span.input-group-btn
+            button.btn.btn-default data-target="#spinner" data-toggle="spinner" data-value="decrease" type="button"
+              i.fa.fa-minus
+          = f.text_field :review_seconds, :class => 'form-control input-number', :id => 'spinner', 'data-ride' => "spinner"
+          span.input-group-btn
+            button.btn.btn-default data-target="#spinner" data-toggle="spinner" data-value="increase" type="button"
+              i.fa.fa-plus
+      .col-sm-2.text-right
+        = f.check_box :restrict_on, :class => 'js-switch3'
+
+    .hr-line-dashed
+    .form-group
+      = f.label 'Unlock Restriction by', :class => 'col-sm-2 control-label'
+      .col-sm-8
+        ul.list-group.restrict_options
+          li.list-group-item.no-borders
+            = f.check_box :email, :class => 'i-checks'
+            span.m-l-xs Entering Email Address
+            = f.check_box :email_confirmation, :class => 'i-checks1  m-l-20'
+            span.m-l-xs Require Visitor Email Confirmation
+          li.list-group-item.no-borders
+            = f.check_box :name, :class => 'i-checks'
+            span.m-l-xs Entering Visit Name
+          li.list-group-item.no-borders
+            = f.check_box :message, :class => 'i-checks'
+            span.m-l-xs Entering Message
+          li.list-group-item.no-borders
+            = f.check_box :phone, :class => 'i-checks'
+            span.m-l-xs Entering Phone Number
+          li.list-group-item.no-borders
+            = f.check_box :agent_approval, :class => 'i-checks'
+            span.m-l-xs Require Agent Approval
+            = f.check_box :send_inquire, :class => 'i-checks1  m-l-20'
+            span.m-l-xs Send Inquire To Agent Email, Allow Approval in Email
+      .col-sm-3
+    .form-group
+      .col-sm-offset-2.col-sm-10.text-center
+        = button_tag(type: 'submit', class: 'btn btn-primary') do
+          i.fa.fa-check-circle
+          |  Save & Update
+

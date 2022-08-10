@@ -1,0 +1,17 @@
+ul.nav.nav-tabs.custom
+  li class="#{current_page_action('edit_ownership')}"
+    = link_to "Tour Ownership", tour_edit_ownership_path, :rel => 'ownership'
+  li class="#{current_page_action('edit_webplayer_basic')}"
+    = link_to "Webplayer Basic", tour_edit_webplayer_basic_ajax_path, :rel => 'webplayer-basic'
+  li class="#{current_page_action('edit_tour_branding')}"
+    = link_to "Tour Branding", tour_edit_tour_branding_path, :rel => 'tour-branding'
+  li class="#{current_page_action('edit_agent_branding')}"
+    = link_to "Agent Branding", tour_edit_agent_branding_path, :rel => 'agent-branding'
+  li class="#{current_page_action('edit_display_contents')}"
+    = link_to "Display Contents", tour_edit_display_contents_path, :rel => 'display-content'
+  li class="#{current_page_action('edit_restrict_options')}"
+    = link_to "Viewing Restriction", tour_edit_restrict_options_path, :rel => 'restrict-option'
+  li class="#{current_page_action('statistic')}"
+    = link_to "Statistic", tour_statistic_index_path, :rel => 'statistic'
+  li class="#{current_page_action('data_log//approved_email_list')}"
+    = link_to "Data Log", tour_data_log_path, :rel => 'visitor'

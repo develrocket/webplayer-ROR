@@ -1,0 +1,190 @@
+= form_for(@admin, :url => get_client_update_url, data: { type: :json }, :html => {:class => 'form edit-client', :multipart => true}, remote: remote) do |f|
+  .row
+    .col-sm-6.b-r
+      h3.head-line Account Information
+      .form-group
+        = f.label :username do
+          | Username
+          span.required *
+        = f.text_field :username, :class => 'form-control'
+        em
+          | Note: User Name is Case-sensitive. Please use following characters
+          br
+          | a-z, digits, -, _, No spaces allowed
+      .hr-line-dashed
+      - if current_admin.super? || current_admin.agent_type.to_i == 3 and current_admin.id != @admin.id
+        .form-group
+          .row
+            .col-sm-6
+              = f.label :password do
+                | Password(min 6 characters)
+                span.required *
+              = f.password_field :password, autocomplete: "off", :class => 'form-control'
+            .col-sm-6
+              = f.label :password do
+                | Confirm Password
+                span.required *
+              = f.password_field :password_confirmation, autocomplete: "off", :class => 'form-control'
+        .hr-line-dashed
+      h3.head-line Contact Information
+      .form-group
+        .row
+          .col-sm-6
+            = f.label :first_name do
+              | First Name
+              span.required *
+            = f.text_field :first_name, :class => 'form-control'
+          .col-sm-6
+            = f.label :last_name do
+              | Last Name
+              span.required *
+            = f.text_field :last_name, :class => 'form-control'
+      .form-group
+        = f.label :email do
+          | Email
+          span.required *
+        = f.text_field :email, :class => 'form-control'
+      = fields_for :agent_info, @admin.agent_info do |f1|
+        .form-group
+          .row
+            .col-sm-6
+              = f1.label :title
+              = f1.text_field :title, :class => 'form-control'
+            .col-sm-6
+              = f1.label :website
+              = f1.text_field :website, :class => 'form-control'
+
+        .row
+          .col-sm-6
+            .form-group
+              = f1.label :license_number, "Licencse Number"
+              = f1.text_field :license_number, :class => 'form-control'
+          .col-sm-6
+            .form-group
+              = f1.label :fax
+              = f1.text_field :fax, :class => 'form-control'
+        .form-group
+          .row
+            .col-sm-6
+              = f1.label :office_phone
+              = f1.text_field :office_phone, :class => 'form-control'
+            .col-sm-6
+              = f1.label :mobile_phone
+              = f1.text_field :mobile_phone, :class => 'form-control'
+        .form-group
+          .row
+            .col-sm-6
+              = f1.label :fb_profile, "Facebook profile"
+              = f1.text_field :fb_profile, :class => 'form-control'
+            .col-sm-6
+              = f1.label :twitter_profile
+              = f1.text_field :twitter_profile, :class => 'form-control'
+        - unless [2,3].include? @admin.agent_type
+          .form-group
+            = label :agent_info, "Profile Picture"
+            .row
+              .col-sm-8
+                = f1.file_field :avatar, type: :file, :class => 'form-control', :accept => 'image/*'
+              .col-sm-4.avatar-preview class="#{@admin.agent_info and @admin.agent_info.avatar.blank? ?  '' : 'image-uploaded'}"
+                - if @admin.agent_info and !@admin.agent_info.avatar.blank?
+                  = image_tag @admin.agent_info.avatar.url, :class => 'img-responsive full-width'
+                  = link_to content_tag('i', '', :class => "fa fa-trash-o"), '#', :class => 'btn btn-danger btn-xs remove-avatar', 'data-id' => @admin.id
+                - else
+                  = image_tag 'missing.png', :class => 'img-responsive full-width'
+      - if params[:action].to_s != 'new' and params[:action].to_s != 'create' and current_admin.super?
+        h3.head-line Notification Email
+        = fields_for :notification, @admin.notification do |f3|
+          .form-group
+            a.edit-notification-email.btn.btn-success href="#" Edit Account Login Info Email
+            br
+            .ckeditor-wrap
+              = f3.cktext_area :additional_email_content, :class => 'form-control', 'style' => 'display:none'
+          .form-group
+            a.send-notification.btn.btn-success href="#" data-rel="#{@admin.id}" Send Account Login Info Email
+            i.fa.fa-check-circle.fa-lg.m-l style='color: #1ab394; display: none'
+
+    .col-sm-6
+      - if current_admin.super?
+        h3.head-line Account Type
+        .form-group
+          .radio
+            label
+              = f.radio_button :agent_type, '1', :class => 'account_type'
+              | Individual Agents(Agent Pay / Agent Control)
+          .radio
+            label
+              = f.radio_button :agent_type, '2', :class => 'account_type'
+              | Brokerage (Brokerage Pay / Brokerage Control)
+          .radio
+            label
+              = f.radio_button :agent_type, '3', :class => 'account_type'
+              | Individual Agent Company
+        .hr-line-dashed
+      - if current_admin.super? || current_admin.agent_type.to_i == 3 and current_admin.id != @admin.id
+        h3.head-line Account Control Panel Authority
+        = fields_for :admin_account_activity, @admin.admin_account_activity do |f2|
+          .checkbox
+            label
+              = f2.check_box :tour_branding
+              | Tour Branding
+          .checkbox
+            label
+              = f2.check_box :agent_branding
+              | Agent Branding
+          .checkbox
+            label
+              = f2.check_box :display_contents
+              | Display Contents
+          .checkbox
+            label
+              = f2.check_box :restriction_option
+              | Restriction Option
+          .checkbox
+            label
+              = f2.check_box :data_log
+              | Dat Log
+          .checkbox
+            label
+              = f2.check_box :statistic
+              | Statistic
+        .hr-line-dashed
+      - else
+        h3.head-line Account Type
+        .form-group
+          p.form-control disabled='true' #{params[:action] == 'new' ? get_agent_name(1) : get_agent_name(@admin.agent_type.to_i)}
+      = fields_for :agent_info, @admin.agent_info do |f1|
+        - if current_admin.super?
+          = render :partial => 'backend/admin/admin_company_params', :locals => { :f1 => f1}
+        - elsif params[:action] != 'new'
+          = render :partial => 'backend/admin/client_company_params', :locals => { :f1 => f1}
+        .office-address-wrap
+          .hr-line-dashed
+          h3.head-line Office address
+          .form-group
+            = f1.label :office_address
+            = f1.text_field :office_address, :class => 'form-control'
+          .form-group
+            .row
+              .col-sm-6
+                = f1.label :city
+                = f1.text_field :city, :class => 'form-control'
+              .col-sm-6
+                = f1.label :zip_code
+                = f1.text_field :zip_code, :class => 'form-control'
+          .form-group
+            .row
+              .col-sm-6
+                = label :state_id, "State"
+                = f1.select :state_id, State.all.collect { |p| [ p.name, p.id ] }, {include_blank: false} , {:class => 'form-control'}
+              .col-sm-6
+                = label :country_id, "Country"
+                = f1.select :country_id, Country.all.collect { |p| [ p.name, p.id ] }, {include_blank: false} , {:class => 'form-control'}
+    .form-group
+      .col-sm-offset-2.col-sm-10.text-right
+        = button_tag(type: 'submit', class: "btn btn-primary") do
+          i.fa.fa-check-circle
+          |  Save  Update
+
+coffee:
+  $ ->
+    new Admin()

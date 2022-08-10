@@ -1,0 +1,15 @@
+doctype html
+html
+  head
+    meta content=("text/html; charset=UTF-8") http-equiv="Content-Type"
+    title Webplayer
+    = stylesheet_link_tag "application_backend", params[:controller], :media => "all", 'data-turbolinks-track' => true
+    = Gon::Base.render_data
+    = javascript_include_tag "application_backend", params[:controller], 'data-turbolinks-track' => true
+    script src="//maps.google.com/maps/api/js?v=3.18&sensor=false&client=&key=&libraries=geometry&language=&hl=&region="
+    script src="//google-maps-utility-library-v3.googlecode.com/svn/tags/markerclustererplus/2.0.14/src/markerclusterer_packed.js"
+    = csrf_meta_tags
+    - if defined?(@isLoginPage).nil?
+      - bodyClass = '' else bodyClass = 'gray-bg'
+  body class=bodyClass
+    = yield

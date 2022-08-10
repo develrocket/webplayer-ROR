@@ -1,0 +1,18 @@
+doctype html
+html
+  head
+    meta content=("text/html; charset=UTF-8") http-equiv="Content-Type"
+  body
+    h1
+      | Hi #{@admin.username}
+    p
+      | One visitor verified with his email address and you need to approve his access.
+    h4
+      | Visitor Information
+    p
+      | Email: #{@visitor.visitor_email.email}
+      br
+      | Location: #{@visitor.city + ' - ' + @visitor.country}
+      br
+    h4
+      | Please click #{link_to "here", :controller => "home", :action => "approve_access_by_token", :only_path => false, :token => @visitor.approve_access_token, :host => "webplayer-controls.herokuapp.com"} to approve his access

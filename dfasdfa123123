@@ -1,0 +1,49 @@
+[1mdiff --git a/app/controllers/home_controller.rb b/app/controllers/home_controller.rb[m
+[1mindex bc7bd94..7fb0730 100644[m
+[1m--- a/app/controllers/home_controller.rb[m
+[1m+++ b/app/controllers/home_controller.rb[m
+[36m@@ -62,7 +62,7 @@[m [mclass HomeController < ApplicationController[m
+     gon.review_seconds = 1 if @tour.restrict_option.review_seconds.to_i == 0[m
+ [m
+     #get visit time[m
+[31m-    gon.time_diff = @time_diff = ((get_current_time(visitor.tour.admin_id) - visitor.last_visit_time) / 1.minute).round[m
+[32m+[m[32m    gon.time_diff = @time_diff = ((Time.now - visitor.last_visit_time) / 1.minute).round[m
+ [m
+     gon.visitor = @visitor = visitor[m
+ [m
+[36m@@ -315,7 +315,7 @@[m [mclass HomeController < ApplicationController[m
+       end[m
+ [m
+       # record visitor log[m
+[31m-      VisitorLog.create(:visitor_id => visitor.id, :access_requested => access_requested, :visit_time => get_current_time(visitor.tour.admin_id))[m
+[32m+[m[32m      VisitorLog.create(:visitor_id => visitor.id, :access_requested => access_requested, :visit_time => Time.now)[m
+ [m
+       visitor1.update(is_verified:visitor.is_verified, access_requested:visitor.access_requested, visitor_email_id:visitor.visitor_email_id)[m
+       redirect_to home_index_path(visitor.tour_id.to_i), :notice => 'email_confirmed'[m
+[36m@@ -327,7 +327,7 @@[m [mclass HomeController < ApplicationController[m
+   def store_visit_time[m
+     visitor_log = VisitorLog.find(params[:visitor_log_id])[m
+     visitor = Visitor.find(visitor_log.visitor_id)[m
+[31m-    current_time = get_current_time(visitor.tour.admin_id)[m
+[32m+[m[32m    current_time = Time.now[m
+     if visitor_log[m
+       duration = (Time.parse(current_time.to_s) - Time.parse(visitor.last_visit_time.to_s))[m
+       visitor_log.update(duration_time: duration)[m
+[36m@@ -383,7 +383,7 @@[m [mclass HomeController < ApplicationController[m
+     # check visitor is new or not[m
+     if visitor[m
+       # set user visit time after get time diff since last visited[m
+[31m-      visitor.last_visit_time = get_current_time(visitor.tour.admin_id)[m
+[32m+[m[32m      visitor.last_visit_time = Time.now[m
+       gon.new_user = false[m
+     else[m
+       gon.new_user = true[m
+[36m@@ -391,7 +391,7 @@[m [mclass HomeController < ApplicationController[m
+ [m
+       visitor.ip_address = @client_ip[m
+       tour = Tour.find(params[:id])[m
+[31m-      visitor.last_visit_time = get_current_time tour.admin_id[m
+[32m+[m[32m      visitor.last_visit_time = Time.now[m
+       visitor.browser = browser.name[m
+       visitor.tour_id = @tour.id[m
+     end[m

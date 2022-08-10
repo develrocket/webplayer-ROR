@@ -1,0 +1,28 @@
+.row
+  /.col-md-4
+  /  .form-group
+  /    .col-md-4.control-label
+  /      label Visit date:
+  /    .col-md-8.p-l-0
+  /      = grid_filter @visitor_data_log_grid, :created_at_filter
+  /.col-md-3
+  /  .form-group
+  /    .col-md-4.control-label
+  /      label Location:
+  /    .col-md-8.p-l-0
+  /      = grid_filter @visitor_data_log_grid, :location_filter
+  /.col-md-5
+  /  .external-buttons
+  button.btn.btn-default.wg-external-reset-button.pull-right.m-r data-grid-name='g1' Reset
+  button.btn.btn-primary.m-r.wg-external-submit-button.pull-right.m-r-md data-grid-name='g1' Apply filter
+
+.row
+  = render_grid(@visitor_data_log_grid).html_safe
+- if current_admin.super?
+  = link_to "Pre-Approved Emails List", tour_approved_email_list_path(id: @tour.id), :id=> 'load_approved_emails_modal', :class => 'btn btn-primary m-r'
+  button.btn.btn-primary.wg-external-csv-export-button data-grid-name='g1'
+    | Export To CSV
+- else
+  = link_to "Pre-Approved Emails List", approved_email_list_path(id: @tour.id), :id => 'load_approved_emails_modal', :class => 'btn btn-primary m-r'
+  button.btn.btn-primary.wg-external-csv-export-button data-grid-name='g1'
+    | Export To CSV

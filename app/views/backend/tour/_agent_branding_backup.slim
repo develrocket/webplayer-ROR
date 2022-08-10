@@ -1,0 +1,38 @@
+= form_for(@tour, :url => @store_path, :html => {:class => 'form-horizontal', multipart: true}) do |f|
+  = fields_for :agent_branding, @tour.agent_branding do |f|
+    .row
+      .col-sm-9.b-r
+        .form-group
+          = f.label :first_name, "First Name", :class => 'col-sm-2 control-label'
+          .col-sm-10
+            = f.text_field :first_name, :class => 'form-control'
+        .hr-line-dashed
+        .form-group
+          = f.label :last_name, "Last Name", :class => 'col-sm-2 control-label'
+          .col-sm-10
+            = f.text_field :last_name, :class => 'form-control'
+        .hr-line-dashed
+        .form-group
+          = f.label :phone, "Phone Number", :class => 'col-sm-2 control-label'
+          .col-sm-10
+            = f.text_field :phone, :class => 'form-control'
+        .hr-line-dashed
+        .form-group
+          = f.label :company_id, "Company", :class => 'col-sm-2 control-label'
+          .col-sm-10
+            = f.select :company_id, Company.all.collect { |p| [p.name, p.id] }, {include_blank: true}, {:class => 'form-control'}
+        .hr-line-dashed
+      .col-sm-3
+        .avatar-preview
+          - if @tour.agent_branding
+            = image_tag @tour.agent_branding.avatar.url, :class => 'img-responsive full-width'
+          - else
+            = image_tag 'missing.png', :class => 'img-responsive full-width'
+        .fileUpload.btn.btn-success.btn-block
+          span Upload Profile
+          = f.file_field :avatar, type: :file, :class => 'upload', :accept => 'image/*'
+    .form-group
+      .col-sm-offset-2.col-sm-10.text-center
+        = button_tag(type: 'submit', class: "btn btn-primary") do
+          i.fa.fa-check-circle
+          |  Save & Update

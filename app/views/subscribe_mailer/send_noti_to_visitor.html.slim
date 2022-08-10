@@ -1,0 +1,11 @@
+doctype html
+html
+  head
+    meta content=("text/html; charset=UTF-8") http-equiv="Content-Type"
+  body
+    h1
+      | Hello, Congratulations!
+    h5
+      |  Your access request for #{@visitor.tour.webplayer_basic.tour_address} has been approved by Tour Owner
+      |  Please click the button below to access your tour. Please enjoy your 3D WALKINTOUR.
+    = link_to "Go To 3D WALKINTOUR", :controller => "home", :action => "index", :only_path => false, :id => @visitor.tour_id, :host => "webplayer-controls.herokuapp.com"

@@ -1,0 +1,103 @@
+.row
+  .col-sm-6
+    h3.head-line Contact Information
+    .form-group
+      label
+        | Email
+      p.form-control disabled='true'= @admin.email
+    .form-group
+      .row
+        .col-sm-6
+          label
+            | First Name
+          p.form-control disabled='true'= @admin.first_name
+        .col-sm-6
+          label
+            | Last Name
+          p.form-control disabled='true'= @admin.last_name
+    .form-group
+      .row
+        .col-sm-6
+          label
+            | Title
+          p.form-control disabled='true'= @admin.agent_info.title
+        .col-sm-6
+          label
+            | Website
+          p.form-control disabled='true'= @admin.agent_info.website
+    .form-group
+      .row
+        .col-sm-6
+          label
+            | License Number
+          p.form-control disabled='true'= @admin.agent_info.license_number
+        .col-sm-6
+          label
+            | Fax
+          p.form-control disabled='true'= @admin.agent_info.fax
+    .form-group
+      .row
+        .col-sm-6
+          label
+            | Office Phone
+          p.form-control disabled='true'= @admin.agent_info.office_phone
+        .col-sm-6
+          label
+            | Mobile Phone
+          p.form-control disabled='true'= @admin.agent_info.mobile_phone
+    .form-group
+      .row
+        .col-sm-6
+          label
+            | Facebook Profile
+          p.form-control disabled='true'= @admin.agent_info.fb_profile
+        .col-sm-6
+          label
+            | Twitter Profile
+          p.form-control disabled='true'= @admin.agent_info.twitter_profile
+  .col-sm-6
+    h3.head-line Account Type
+    .form-group
+      - if @admin.agent_type.to_i == 1
+        p.form-control disabled='true' Individual Agents(Agent Pay / Agent Control)
+      -elsif @admin.agent_type.to_i == 2
+        p.form-control disabled='true' Brokerage (Brokerage Pay / Brokerage Control)
+      -else
+        p.form-control disabled='true' Individual Agent Company
+    .hr-line-dashed
+    h3.head-line Company
+    .form-group
+      label Company Name
+      p.form-control disabled='true' #{@admin.agent_info.company.name if @admin.agent_info.company}
+      - if @admin.agent_info.company
+        .form-group
+          .row
+            .col-sm-8
+              label Company Logo
+            .col-sm-4.logo-preview
+              = image_tag @admin.agent_info.company.logo.url, :class => 'img-responsive full-width'
+    h3.head-line Office Address
+    .form-group
+      label
+        | office Address
+      p.form-control disabled='true'= @admin.agent_info.office_address
+    .form-group
+      .row
+        .col-sm-6
+          label
+            | City
+          p.form-control disabled='true'= @admin.agent_info.city
+        .col-sm-6
+          label
+            | Zip code
+          p.form-control disabled='true'= @admin.agent_info.zip_code
+    .form-group
+      .row
+        .col-sm-6
+          label
+            | State
+          p.form-control disabled='true'= @admin.state ? @admin.state.name : ''
+        .col-sm-6
+          label
+            | Country
+          p.form-control disabled='true'= @admin.country ? @admin.country.name : ''

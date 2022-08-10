@@ -1,0 +1,13 @@
+= render :partial => 'backend/navbar'
+#page-wrapper.gray-bg
+  = render :partial => 'backend/topbar'
+  = render :partial => 'backend/client/page_topbar'
+
+  .wrapper.wrapper-content.animated.fadeInRight
+    .ibox.float-e-margins
+      = render :partial => 'backend/client/webplayer_tabs'
+      .ibox-content.custom.form-horizontal
+        = render :partial => 'backend/client/visitor/visitor_data_log_grid'
+        = render :partial => 'backend/tour/data_log'
+
+= render :partial => 'backend/tour/visitor_location_map_modal'

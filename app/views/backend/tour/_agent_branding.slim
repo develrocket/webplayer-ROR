@@ -1,0 +1,86 @@
+= form_for(@tour, :url => @store_path, data: { type: :json }, :html => {:class => 'form-horizontal edit-agent-branding', multipart: true}, :remote => true) do |f|
+  .row
+    .col-sm-12
+      = fields_for :webplayer_basic, @tour.webplayer_basic do |f1|
+        .form-group
+          = f1.label :url, "Branded URL", :class => 'control-label col-sm-2'
+          .col-sm-9
+            p.form-control disabled="disabled" style="height: auto; min-height: 34px;"
+              = get_url_for_branded(@tour, 1)
+
+        .form-group
+          = f1.label :embed_code, "Branded Embed Code", :class => 'control-label col-sm-2'
+          .col-sm-9
+            p.form-control disabled="disabled" style="height: auto; min-height: 34px;"
+              = get_embed_code_for_branded(@tour, 1)
+        .hr-line-dashed
+  .row
+    .col-sm-8.b-r
+      = fields_for :admin, @tour.admin do |f|
+        .form-group
+          = f.label :first_name, "First Name", :class => 'col-sm-2 control-label'
+          .col-sm-10
+            = f.text_field :first_name, :class => 'form-control'
+        .hr-line-dashed
+        .form-group
+          = f.label :last_name, "Last Name", :class => 'col-sm-2 control-label'
+          .col-sm-10
+            = f.text_field :last_name, :class => 'form-control'
+        .hr-line-dashed
+      = fields_for :agent_info, @tour.admin.agent_info do |f|
+        .form-group
+          = f.label :title, "Title", :class => 'col-sm-2 control-label'
+          .col-sm-10
+            = f.text_field :title, :class => 'form-control'
+        .hr-line-dashed
+        .form-group
+          = f.label :mobile_phone, "Phone Number", :class => 'col-sm-2 control-label'
+          .col-sm-10
+            = f.text_field :mobile_phone, :class => 'form-control'
+        .hr-line-dashed
+        .form-group
+          = f.label :company_id, "Company", :class => 'col-sm-2 control-label'
+          .col-sm-10
+            = f.select :company_id, Company.all.collect { |p| [ p.name, p.id ] }, {include_blank: true} , {:class => 'form-control'}
+
+    .col-sm-3
+      = fields_for :agent_branding, @tour.agent_branding do |f2|
+        .avatar-preview class="#{@tour.agent_branding.avatar.blank? ? '' : 'image-uploaded'}"
+          = link_to content_tag('i', '', :class => "fa fa-trash-o"), '#', :class => 'btn btn-danger btn-xs remove-avatar', 'data-id' => @tour.id, 'style' => 'right: 0'
+          - if !@tour.agent_branding.avatar.blank?
+            = image_tag @tour.agent_branding.avatar.url, :class => 'img-responsive full-width'
+          - else
+            - if @tour.admin.agent_type.to_i == 1
+              - if @tour.admin.agent_info
+                = image_tag @tour.admin.agent_info.avatar.url, :class => 'img-responsive full-width'
+              - else
+                = image_tag 'missing.png', :class => 'img-responsive full-width'
+            - else
+              - if @tour.admin.agent_info and @tour.admin.agent_info.company
+                = image_tag @tour.admin.agent_info.company.logo.url, :class => 'img-responsive full-width'
+              - else
+                = image_tag 'missing.png', :class => 'img-responsive full-width'
+        .fileUpload.btn.btn-success.btn-block
+          span Upload Profile
+          = f2.file_field :avatar, type: :file, :class => 'upload', :accept => 'image/*'
+  .hr-line-dashed
+  .form-group
+    .col-sm-offset-2.col-sm-9.text-right
+      = button_tag(type: 'submit', class: "btn btn-primary btn-submit") do
+        i.fa.fa-check-circle
+        |  Save & Update
+
+coffee:
+  $ ->
+    $("input#agent_branding_avatar").change( ->
+      main.read_url(this, 'avatar-preview')
+    )
+
+    $('a.remove-avatar').click (e) ->
+      thisObj = $(this)
+      e.preventDefault()
+
+      type = 'agent_branding'
+
+      tour_id = $(this).data('id')
+      main.remove_image_tour(gon.remove_image_path, type, tour_id, thisObj)

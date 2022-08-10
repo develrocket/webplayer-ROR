@@ -1,0 +1,24 @@
+= render :partial => 'backend/navbar'
+#page-wrapper.gray-bg
+  = render :partial => 'backend/topbar'
+  .row.wrapper.border-bottom.white-bg.page-heading
+    .col-lg-10
+      h2 Tours
+      ol.breadcrumb
+        li
+          a href="#"  Home
+        li.active
+          = link_to tour_index_path do
+            strong Tours
+  - if flash[:notice]
+    .alert.alert-info.custom-alert-margin
+      = flash[:notice]
+  .wrapper.wrapper-content.animated.fadeInRight
+    - if current_admin.super?
+      .row
+        .col-lg-12.m-b-sm
+          = link_to tour_add_path, :class => 'btn btn-w-m btn-primary pull-right' do
+            i.fa.fa-plus
+            |  Add Tour
+    .ibox.float-e-margins
+      = render :partial => 'backend/tour/tours'

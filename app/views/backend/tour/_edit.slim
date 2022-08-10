@@ -1,0 +1,34 @@
+= render :partial => 'backend/navbar'
+#page-wrapper.gray-bg
+  = render :partial => 'backend/topbar'
+  .row.wrapper.border-bottom.white-bg.page-heading.m-b-md
+    .col-lg-10
+      h2 Tours
+      ol.breadcrumb
+        li
+          a href="#"  Home
+        li
+          = link_to "Tours", tour_index_path
+        li.active
+          a href="#"
+            strong Edit Tour - #{get_url_for_webplayer(@tour)}
+  .row
+    .col-sm-6
+      iframe#interior_iframe height="280" src="#{iframe_home_index_path(@tour.id)}" width="500" style='padding-left: 10px' error!
+
+  .result-notice
+
+  - if flash[:notice]
+    .alert.alert-info.custom-alert-margin
+      = flash[:notice]
+  .wrapper.wrapper-content.animated.fadeInRight
+    = tour_error_messages!
+    .row
+      .col-lg-12.m-b-sm
+        = link_to tour_index_path, :class => 'btn btn-w-m btn-primary pull-right' do
+          i.fa.fa-long-arrow-left
+          |  Back
+    .ibox.float-e-margins
+      = render :partial => 'backend/tour/tabs'
+      .ibox-content.custom.form-horizontal
+        = yield

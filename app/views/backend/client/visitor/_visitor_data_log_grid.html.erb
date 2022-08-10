@@ -1,0 +1,75 @@
+<%= define_grid(@visitor_data_log_grid, show_filters: :always, hide_csv_button: true, hide_submit_button: true, hide_reset_button: true) do |g|
+
+  g.column name: 'ID' do |log|
+    log.id
+  end
+
+  g.column name: 'Visit Date', attribute: 'created_at', filter_type: :bootstrap_datepicker do |log|
+    local_time(log.created_at).to_date
+  end
+
+  g.column name: 'Visit Time' do |log|
+    local_time(log.created_at, format: '%l:%M%P')
+  end
+
+  g.column name: 'IP', attribute: 'ip_address', assoc: :visitor do |log|
+    log.visitor.ip_address
+  end
+
+  # g.column name: 'Location', in_csv: false, attribute: 'city', assoc: :visitor, detach_with_id: :location_filter, custom_filter: :auto do |log|
+  g.column name: 'Location', in_csv: false, attribute: 'city', assoc: :visitor, custom_filter: :auto do |log|
+    link_to '#', :class=>'visitor-location', 'data-lat' => "#{log.visitor.latitude}", 'data-lon' => "#{log.visitor.longitude}" do
+      content_tag(:i, "", :class => "fa fa-map-marker")
+      content_tag(:span, "#{log.visitor.city}", :class => "")
+    end
+  end
+
+  g.column name: 'Country', attribute: 'country', assoc: :visitor, custom_filter: :auto do |log|
+    log.visitor.country
+  end
+  g.column name: 'Browser', attribute: 'browser', assoc: :visitor, custom_filter: :auto do |log|
+    log.visitor.browser
+  end
+
+  g.column name: 'Email', attribute: 'email', assoc: [:visitor, :visitor_email] do |log|
+    log.visitor.visitor_email.email if log.visitor.visitor_email
+  end
+
+  g.column name: 'Name', attribute: 'name' do |log|
+    log.name
+  end
+
+  # g.column name: 'Phone', attribute: 'phone', detach_with_id: :phone_filter, custom_filter: :auto do |log|
+  g.column name: 'Phone', attribute: 'phone' do |log|
+    log.phone
+  end
+
+  g.column name: 'Message', attribute: 'message' do |log|
+    log.message[0..20]
+  end
+
+  g.column name: 'Duration', attribute: 'duration_time',custom_filter: [['0 only', '0']] do |log|
+    Time.at(log.duration_time).utc.strftime("%H:%M:%S")
+  end
+  g.column name: 'Access Requested', attribute: 'access_requested', in_csv: false do |log|
+    if log.access_requested  and log.visitor.is_verified
+      content_tag(:span, "Access Requested", :class => "label label-success")
+    elsif log.access_requested
+      content_tag(:button, "Approve", :class => "btn btn-warning btn-xs", :id => "approve_access", "data-visitor_id" => "#{log.visitor.id}")
+    end
+  end
+
+  g.column name: 'Access Approve', attribute: 'is_verified', assoc: :visitor, in_csv: false do |log|
+    if log.visitor.visitor_email and log.visitor.is_verified
+      content_tag(:span, "Approved Access", :class => "label label-primary")
+    end
+  end
+
+  g.column name: 'Detail', in_csv: false do |log|
+    if current_admin.super?
+      link_to "Detail", tour_visitor_log_detail_path(:visitor_log_id => log.id), :class => 'btn btn-info btn-xs data-log-detail'
+    else
+      link_to "Detail", visitor_log_detail_path(:visitor_log_id => log.id), :class => 'btn btn-info btn-xs data-log-detail'
+    end
+  end
+end -%>

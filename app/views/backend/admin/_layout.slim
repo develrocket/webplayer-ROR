@@ -1,0 +1,24 @@
+= javascript_include_tag Ckeditor.cdn_url
+= render :partial => 'backend/navbar'
+#page-wrapper.gray-bg
+  = render :partial => 'backend/topbar'
+  = render :partial => 'backend/admin/head', :locals => { :mode => @admin.username}
+  .wrapper.wrapper-content.animated.fadeInRight
+    = admin_error_messages!
+    - if current_admin.super?
+      .row
+        .col-lg-12.m-b-sm
+          = link_to client_index_path, :class => 'btn btn-w-m btn-primary pull-right' do
+            i.fa.fa-long-arrow-left
+            |  Back
+    - elsif current_admin.agent_type.to_i == 3
+      .row
+        .col-lg-12.m-b-sm
+          = link_to client_add_path, :class => 'btn btn-w-m btn-primary pull-right' do
+            i.fa.fa-plus
+            |  Add Client
+
+    .ibox.float-e-margins
+      = render :partial => 'backend/admin/tabs'
+      .ibox-content.custom
+        = yield

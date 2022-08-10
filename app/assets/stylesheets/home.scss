@@ -1,0 +1,343 @@
+// Place all the styles related to the home controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+/*
+*= require jquery-ui/core
+*= require jquery-ui/theme
+*= require nice-select
+*= require fakeLoader
+*/
+.player-holder {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  -webkit-font-smoothing: subpixel-antialiased;
+  background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJod…BoZWlnaHQ9IjEwMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+  background: -moz-radial-gradient(at 50% bottom, ellipse cover, #474d53 0, #232628 53%, #111213 100%);
+  background: -webkit-gradient(radial, at 50% bottom, 0, center center, 100%, color-stop(0%, #474d53), color-stop(53%, #232628), color-stop(100%, #111213));
+  background: -webkit-radial-gradient(at 50% bottom, ellipse cover, #474d53 0, #232628 53%, #111213 100%);
+  background: -o-radial-gradient(at 50% bottom, ellipse cover, #474d53 0, #232628 53%, #111213 100%);
+  background: -ms-radial-gradient(at 50% bottom, ellipse cover, #474d53 0, #232628 53%, #111213 100%);
+  background: radial-gradient(ellipse at 50% bottom, #474d53 0, #232628 53%, #111213 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#474d53', endColorstr='#111213', GradientType=1);
+}
+.player-holder #splash {
+  position: absolute;
+  left: 50vw;
+  top: 50vh;
+  margin: 0px;
+  width: 25%;
+  display: block;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  -webkit-user-select: none;
+}
+#interior_iframe, #detach_iframe {
+  display: block;
+  margin: 0 auto;
+  border: none;
+}
+.interior-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow-y: hidden;
+}
+html, body { height: 100%; }
+#container { width: 100%; padding: 0; }
+#map { width: 100%; height: 100%; }
+.map-container, .exterior-container, #exterior_iframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+  -moz-animation: fadein 2s; /* Firefox < 16 */
+  -ms-animation: fadein 2s; /* Internet Explorer */
+  -o-animation: fadein 2s; /* Opera < 12.1 */
+  animation: fadein 2s;
+}
+.hide {
+  -webkit-transition: opacity 3s ease-in-out;
+  -moz-transition: opacity 3s ease-in-out;
+  -ms-transition: opacity 3s ease-in-out;
+  -o-transition: opacity 3s ease-in-out;
+  opacity: 1;
+}
+button {
+  border: none;
+}
+.map-switcher {
+  position: absolute;
+  left: 0;
+  bottom: 120px;
+  -moz-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+  -moz-transform-origin: bottom left;
+  -webkit-transform-origin: bottom left;
+  transform-origin: bottom left;
+}
+.pin-top.left {
+  left: 10px;
+  z-index: 100;
+}
+.pin-top {
+  position: fixed;
+  top: 16px;
+  -webkit-transition: all .5s;
+  transition: all .5s;
+  line-height: 1;
+}
+.pin-top.right {
+  right: 10px;
+  text-shadow: 0 0 5px rgba(0,0,0,.9);
+  z-index: 999;
+}
+.interior-container .pin-top.right {
+  right: 110px;
+}
+#model-title {
+  font-weight: 100;
+  z-index: 20;
+  position: relative;
+  word-wrap: break-word;
+  height: 52px;
+}
+#title-toggle {
+  float: left;
+  text-align: center;
+  width: 20px;
+  padding: 0;
+  padding-top: 20px;
+  height: 52px;
+}
+#title-toggle:hover, #title-toggle:active {
+  background-color: rgba(0,0,0,.75);
+  color: #fff;
+}
+#title-container {
+  padding: 0;
+  white-space: nowrap;
+  display: inline-block;
+  margin-left: 1px;
+  height: 52px;
+  position: relative;
+  font-size: 18px;
+  font-weight: 100;
+  float: left;
+}
+#title-container p {
+  margin: 16px 10px 6px;
+}
+.exterior-switcher {
+  position: absolute;
+  left: 0;
+  bottom: 220px;
+  -moz-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+  -moz-transform-origin: bottom left;
+  -webkit-transform-origin: bottom left;
+  transform-origin: bottom left;
+}
+.switch-buttons {
+  padding: 4px 15px;
+  color: white;
+  background-color: rgba( 0,0,0, 0.6 );
+}
+.switch-buttons.tour-address {
+  position: absolute;
+  left: 5%;
+  top: 7%;
+}
+.tour-address h2 {
+  margin: 5px;
+}
+.bird-view,.aerial-view  {
+  cursor: pointer;
+  float: left;
+  width: 85px;
+  text-align: center;
+  padding: 5px;
+  margin-bottom: 4px;
+  transition: color .1s;
+  border: 1px #000 solid;
+}
+.bird-view {
+  margin-right: 10px;
+}
+.bird-view.selected, .aerial-view.selected {
+  color: #4BCDFC;
+  border: 1px solid #4BCDFC;
+}
+.go-home-icon {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  margin-right: 6px;
+  padding-top: 2px;
+}
+.agent-branding {
+  padding: 15px;
+  color: white;
+  background-color: rgba( 0,0,0, 0.6 );
+  position: absolute;
+  right: 0;
+  top: 12%;
+}
+.pin-bottom.center {
+  left: 50%;
+}
+.pin-bottom.left {
+  left: 10px;
+  height: 36px;
+}
+.pin-bottom {
+  position: fixed;
+  bottom: 0;
+  -webkit-transition: all .5s;
+  transition: all .5s;
+  line-height: 1;
+}
+#gui-modes-map, #gui-modes-exterior {
+  width: 26px;
+  height: 26px;
+}
+#view-controllers {
+  color: rgba(255,255,255,.5);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: .1em;
+  position: absolute;
+  bottom: 56px;
+  left: -90px;
+  width: 180px;
+}
+.agent-branding .show-branding {
+  width: 240px;
+}
+.show-branding h3, .show-branding h4, .show-branding h5{
+  padding-right: 15px;
+}
+.show-branding h5 {
+  line-height: 1.5;
+}
+.agent-branding img { max-height: 160px; }
+#hide-agent-branding {
+  z-index: 10000;
+  top: 12px;
+  right: 12px;
+}
+#hide-agent-branding.position-absolute {
+  position: absolute;
+}
+a.hasHover:hover,a.hasHover:active{color:rgba(75,205,252,1);}
+.white-color {
+  color: white !important;
+}
+.gm-tilt {
+  display: none;
+}
+div[title="Rotate map 90 degrees"]{
+  top: 38px;
+}
+a[href^="http://maps.google.com/maps"]{display:none !important}
+a[href^="https://maps.google.com/maps"]{display:none !important}
+select#detach_switcher {
+  background: transparent;
+  color: #fff;
+}
+select#detach_switcher option {
+  background: #000;
+  opacity: 0.7;
+  color: #fff;
+}
+.nice-select .option {
+  text-shadow: none;
+  padding-left: 8px;
+  padding-right: 18px;
+  min-height: 27px;
+  line-height: 25px;
+  background-color: rgba(36,36,36,1);
+  color: #fff;
+  margin-top: 2px;
+}
+.nice-select .list {
+  border-radius: 0;
+  margin-top: 2px;
+  background: transparent;
+}
+.nice-select {
+  text-shadow: none;
+  height: 27px;
+  line-height: 25px;
+  border-radius: 0;
+  font-size: 13px;
+  padding-left: 10px;
+  padding-right: 20px;
+  background: transparent;
+  border-color: #fff;
+  color: #fff;
+}
+.nice-select:hover {
+  border-color: #4bcdfc;
+  color: #4bcdfc;
+}
+.nice-select .option.focus, .nice-select .option.selected.focus {
+  background-color: rgba(36,36,36,1);
+}
+.nice-select .option:hover {
+  background-color: #000;
+}
+.fl.spinner1 {
+  position: absolute;
+  left: 48.5%;
+  top: 47.5%;
+}
+#loading_modal .modal-dialog {
+  width: 100%;
+  height: 100%;
+  margin: 0
+}
+#advertising-layer{
+  background-color: rgba(0, 0, 0, 0.5);
+  top: auto;
+  right: auto;
+  width: 97%;
+  height: 80px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin: 0 1.5%;
+}
+.advertising-container {
+  position: relative;
+}
+.advertising-container img {
+  width: auto;
+  height: 80px;
+  display: inline-block;
+}
+a.close-advertising{
+  cursor: pointer;
+  color: #fff;
+  border: 1px solid #AEAEAE;
+  border-radius: 50%;
+  background: #605F61;
+  font-size: 30px;
+  font-weight: 500;
+  display: inline-block;
+  line-height: 0;
+  padding: 12px 4px;
+  position: absolute;
+  right: -10PX;
+  top: -10px;
+}
+
+.close-advertising:before {
+  content: "×";
+}
+.p-r-0 {
+ padding-right: 0 !important;
+}

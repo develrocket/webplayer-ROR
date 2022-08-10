@@ -1,0 +1,21 @@
+ul.nav.nav-tabs.custom
+  li class="#{currentPage('backend/client/webplayer_basic')}"
+    = link_to "Webplayer Basic", webplayer_basic_ajax_index_path(@tour.id), :rel => 'webplayer-basic'
+  - if @tour.is_tour_branding
+    li class="#{currentPage('backend/client/tour_branding')}"
+      = link_to "Tour Branding", tour_branding_index_path(@tour.id), :rel => 'tour-branding'
+  - if @tour.is_agent_branding
+    li class="#{currentPage('backend/client/agent_branding')}"
+      = link_to "Agent Branding", agent_branding_index_path(@tour.id), :rel => 'agent-branding'
+  - if @tour.is_display_contents
+    li class="#{currentPage('backend/client/display_content')}"
+      = link_to "Display Content", display_content_index_path(@tour.id), :rel => 'display-content'
+  - if @tour.is_restriction_option
+    li class="#{currentPage('backend/client/restrict_option')}"
+      = link_to "Restrict Options", restrict_option_index_path(@tour.id), :rel => 'restrict-option'
+  - if @tour.is_statistic
+    li class="#{currentPage('backend/client/statistic')}"
+      = link_to "Statistic", statistic_index_path(@tour.id), :rel => 'statistic'
+  - if @tour.is_data_log
+    li class="#{currentPage('backend/client/visitor')}"
+      = link_to "Visitors Log Data", visitors_log_index_path(@tour.id), :rel => 'visitor'

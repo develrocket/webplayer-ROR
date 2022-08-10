@@ -1,0 +1,75 @@
+.row
+  .col-md-12
+    = form_tag subscribe_visitor_path(@tour.id), :id => 'file_form', :class => 'form-horizontal' do
+      = hidden_field_tag "visitor_id", @visitor.id
+      - if @tour.restrict_option.read_attribute("email")
+        h4.text-center Please Enter Your Registered Email to Login and Access the Tour
+        .custom-hr
+          span or
+        h4.text-center Haven't Registered Yet? Enter Your Email to Register
+        .form-group
+          .col-md-12
+            = text_field_tag "email", nil, placeholder: "Your email", class: 'form-control input-md'
+      - loaded = false
+      - ['name', 'message', 'phone'].each do |name|
+        - if @tour.restrict_option.read_attribute("#{name}")
+          - if !loaded
+            hr
+            h4.text-center And The Following Information
+          - loaded = true
+          .form-group
+            .col-md-12
+              - if name == 'message'
+                = text_area_tag "#{name}", nil, placeholder: "Your #{name}", class: 'form-control input-md', :rows => 5
+              - else
+                = text_field_tag "#{name}", nil, placeholder: "Your #{name}", class: 'form-control input-md'
+
+javascript:
+  var file_form_validate = function() {
+    $("form#file_form").validate({
+      errorClass: 'help-block animation-slideUp', // You can change the animation class for a different entrance animation - check animations page
+      errorElement: 'div',
+      errorPlacement: function(error, e) {
+        e.parents('.form-group > div').append(error);
+      },
+      highlight: function(e) {
+        $(e).closest('.form-group').removeClass('has-success has-error').addClass('has-error');
+        $(e).closest('.help-block').remove();
+      },
+      success: function(e) {
+        e.closest('.form-group').removeClass('has-success has-error');
+        e.closest('.help-block').remove();
+      },
+      rules: {
+        name: {
+          required: true
+        },
+        email: {
+          required: true,
+          email: true
+        },
+        message: {
+          required: true
+        },
+        phone: {
+          required: true
+        }
+      },
+
+      //Messages for form validation
+      messages: {
+        email: {
+          required: 'Please enter email'
+        },
+        name: {
+          required: 'Please enter your name'
+        },
+        message: {
+          required: 'Please enter message'
+        },
+        phone: {
+          required: 'Please enter your phone number'
+        }
+      }
+    });
+  };

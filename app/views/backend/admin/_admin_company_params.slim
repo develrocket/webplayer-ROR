@@ -1,0 +1,26 @@
+h3.head-line Company
+.form-group
+  = label :company_id, "Assign to exsiting company"
+  = f1.select :company_id, Company.where.not(name: '').where({is_brokerage: false}).collect { |p| [ p.name, p.id ] }, {include_blank: true} , {:class => 'form-control'}
+.new-company-wrap
+  label.m-b.m-t-sm
+    - if (params[:action] == 'new') || (@admin.is_agent_info? and @admin.agent_info.company_id == 0)
+      | or Add New Company
+    - else
+      | or Edit Company
+      = f1.hidden_field :company_id
+  = fields_for :company, @admin.company do |f2|
+    .form-group
+      = label :company, "Company Name"
+      = f2.text_field :name, :class => 'form-control'
+    .form-group
+      = label :company, "Company Logo"
+      .row
+        .col-sm-8
+          = f2.file_field :logo, type: :file, :class => 'form-control', :accept => 'image/*'
+        .col-sm-4.logo-preview class="#{ @admin.company && !@admin.company.logo.blank? ? 'image-uploaded' : ''}"
+          - if @admin.company
+            = image_tag @admin.company.logo.url, :class => 'img-responsive full-width'
+          - else
+            = image_tag 'missing.png', :class => 'img-responsive full-width'
+          = link_to content_tag('i', '', :class => "fa fa-trash-o"), '#', :class => 'btn btn-danger btn-xs remove-logo', 'data-id' => @admin.id

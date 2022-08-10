@@ -1,0 +1,61 @@
+.log-detail
+  .row
+    .col-sm-2
+      h4 Visit Date:
+    .col-sm-4
+      h4= @visitor_log.visit_time.to_date
+    .col-sm-2
+      h4 Visit Time:
+    .col-sm-4
+      h4= @visitor_log.visit_time.strftime("%I:%M%p")
+  .row
+    .col-sm-2
+      h4 Ip:
+    .col-sm-4
+      h4= @visitor_log.visitor.ip_address
+    .col-sm-2
+      h4 Country:
+    .col-sm-4
+      h4= @visitor_log.visitor.country
+  .row
+    .col-sm-2
+      h4 City:
+    .col-sm-4
+      h4= @visitor_log.visitor.city
+    .col-sm-2
+      h4 Browser:
+    .col-sm-4
+      h4= @visitor_log.visitor.browser
+  .row
+    .col-sm-2
+      h4 Name:
+    .col-sm-4
+      - if @visitor_log.visitor.name != nil
+        h4= @visitor_log.visitor.name
+    .col-sm-2
+      h4 Email:
+    .col-sm-4
+      - if @visitor_log.visitor.visitor_email
+        h4= @visitor_log.visitor.visitor_email.email
+  .row
+    .col-sm-2
+      h4 Phone:
+    .col-sm-4
+      - if @visitor_log.visitor.phone != nil
+        h4= @visitor_log.visitor.phone
+    .col-sm-2
+      h4 Visitor Access Requested:
+      .col-sm-4
+        h4= @visitor_log.access_requested ? 'Yes' : ''
+
+  .row
+    .col-sm-4
+      h4 Access approved:
+    .col-sm-6
+      - if @visitor_log.visitor.is_verified
+        h4.label.label-success Yes
+  .row
+    .col-sm-12
+      h4 Message:
+      - if @visitor_log.visitor.message != nil
+        p= @visitor_log.visitor.message

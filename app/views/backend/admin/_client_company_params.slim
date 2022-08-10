@@ -1,0 +1,28 @@
+h3.head-line Company
+- if current_admin.agent_type.to_i == 1
+  .form-group
+    label Company Name
+    p.form-control disabled='true' #{@admin.agent_info.company.name if @admin.agent_info.company}
+    - if @admin.agent_info.company
+      .form-group
+        .row
+          .col-sm-8
+            label Company Logo
+          .col-sm-4.logo-preview
+            = image_tag @admin.agent_info.company.logo.url, :class => 'img-responsive full-width'
+- else
+  = fields_for :company, @admin.company do |f2|
+    .new-company-wrap
+      label.no-margins style='display: block'
+        = f1.hidden_field :company_id
+      .form-group
+        = label :company, "Company Name"
+        = f2.text_field :name, :class => 'form-control'
+      .form-group
+        = label :company, "Company Logo"
+        .row
+          .col-sm-8
+            = f2.file_field :logo, type: :file, :class => 'form-control', :accept => 'image/*'
+          .col-sm-4.logo-preview  class="#{@company.logo.blank? ? '' : 'image-uploaded'}"
+            = image_tag @company.logo.url, :class => 'img-responsive full-width'
+            = link_to content_tag('i', '', :class => "fa fa-trash-o"), '#', :class => 'btn btn-danger btn-xs remove-logo', 'data-id' => @admin.id

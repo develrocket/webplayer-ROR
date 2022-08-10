@@ -1,0 +1,31 @@
+= form_for(@tour, :url => @store_path, :html => {:class => 'form-horizontal', :multipart => true}) do |f|
+  = fields_for :webplayer_basic, @tour.webplayer_basic do |f1|
+    .form-group
+      = f1.label :url, "URL", :class => 'control-label col-sm-2'
+      .col-sm-9
+        p.form-control disabled="disabled"
+          = get_url_for_webplayer(@tour)
+
+    .form-group
+      = f1.label :embed_code, "Embed Code", :class => 'control-label col-sm-2'
+      .col-sm-9
+        p.form-control disabled="disabled"
+          = get_embed_code_for_webplayer(@tour)
+    .hr-line-dashed
+    .form-group
+      = f1.label :height, :class => 'control-label col-sm-2' do
+        | Height
+        span.required  *
+      .col-sm-2
+        = f1.text_field :height, :class => 'form-control'
+      = f1.label :height, :class => 'control-label col-sm-1' do
+        | Width
+        span.required  *
+      .col-sm-2
+        = f1.text_field :width, :class => 'form-control'
+    .hr-line-dashed
+    .form-group
+      .col-sm-offset-2.col-sm-9.text-right
+        = button_tag(type: 'submit', class: "btn btn-primary") do
+          i.fa.fa-check-circle
+          |  Save & Update

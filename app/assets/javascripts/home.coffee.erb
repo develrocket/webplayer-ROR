@@ -1,0 +1,232 @@
+#= require jquery-ui
+#= require jquery.nice-select
+#= require visibility
+
+main = new Home()
+is_status_hidden = false
+
+ready = ->
+  # check new visitor
+  if !gon.new_user
+    check_visitor_permission()
+
+  # sign in button in map container
+  $("button.sign-in-button").click ->
+    check_visitor_permission()
+
+ #  store visitor duration time
+  $(window).on 'beforeunload', ->
+    store_visit_time('close')
+    return
+
+  main.define_event()
+
+  Visibility.change (e, state) ->
+    console.log state
+    if state == 'visible'
+      if is_status_hidden
+        store_visit_time('visible')
+        is_status_hidden = false
+    else
+      if !is_status_hidden
+        window.setTimeout( ->
+          store_visit_time('hidden')
+          is_status_hidden = true
+        , 60000)
+
+  store_visit_time('new')
+
+  return
+
+myConfObj = iframeMouseOver: false
+window.focus()
+
+window.addEventListener 'blur', ->
+  if myConfObj.iframeMouseOver
+    window.setTimeout (->
+      check_visitor_permission()
+    ), Number(gon.review_seconds) * 1000
+  return
+
+# mouse event check on iframe
+document.getElementById('interior-container').addEventListener 'mouseover', ->
+  myConfObj.iframeMouseOver = true
+  return
+document.getElementById('interior-container').addEventListener 'mouseout', ->
+  myConfObj.iframeMouseOver = false
+  return
+
+document.getElementById('exterior-container').addEventListener 'mouseover', ->
+    myConfObj.iframeMouseOver = true
+    return
+document.getElementById('exterior-container').addEventListener 'mouseout', ->
+    myConfObj.iframeMouseOver = false
+    return
+# visitor play permission check
+check_visitor_permission = ->
+  name_required = false
+  phone_required = false
+  message_required = false
+
+  if isEmpty(gon.visitor.name) and gon.restrict_name
+    name_required = true
+  if isEmpty(gon.visitor.phone) and gon.restrict_phone
+    phone_required = true
+  if isEmpty(gon.visitor.message) and gon.restrict_message
+    message_required = true
+
+  if gon.time_diff - 60 <= 0
+    if !gon.visitor.is_verified and gon.restrict_on
+      if isEmpty(gon.visitor_email)
+        fileFormBootbox()
+      else
+        if name_required || phone_required || message_required
+          formBootBox4(name_required, phone_required, message_required)
+        else
+          if gon.visitor.access_requested
+            formBootBox3()
+          else formBootBox2()
+    else
+      if name_required || phone_required || message_required
+        formBootBox4(name_required, phone_required, message_required)
+  return
+# bootbox 1
+fileFormBootbox = ->
+  $.get gon.get_bootbox1_content_path, (message, status) ->
+    if $('form#file_form').length == 0
+      bootbox.dialog
+        title: 'Preview Section is Time Out to Continue Your Tour'
+        message: message
+        backdrop: true
+        closeButton: false
+        buttons: success:
+          label: 'Submit'
+          className: 'btn-success'
+          callback: ->
+            file_form_validate()
+            if $('form#file_form').valid()
+              $('div#loading_modal').modal('show')
+              $('form#file_form').ajaxSubmit success: (data) ->
+                $('div#loading_modal').modal('hide')
+                if !isEmpty(data.verified) and !data.verified
+                  if data.access_requested
+                    formBootBox3()
+                  else formBootBox2()
+                  gon.visitor.email = $('form#file_form input#email').val()
+                else
+                  gon.visitor.is_verified = true
+                return
+            else
+              return false
+            return
+    return
+  return
+
+# string empty or undefined, null check
+isEmpty = (str) ->
+  typeof str == 'string' && !str.trim() || typeof str == 'undefined' || str == null
+
+#  2rd bootbox
+formBootBox2 = ->
+  $.get gon.get_bootbox2_content_path, (message, status) ->
+    if $('form#file_form').length == 0
+      bootbox.dialog
+        title: 'An Confrimation Eamil Has Been Sent to You'
+        message: message
+        backdrop: true
+        closeButton: false
+        buttons: success:
+          label: 'Submit'
+          className: 'btn-success'
+          callback: ->
+            bootbox2_validate()
+
+            if $('form#file_form').valid()
+              $('div#loading_modal').modal('show')
+              $('form#file_form').ajaxSubmit success: (data) ->
+                $('div#loading_modal').modal('hide')
+                if !isEmpty(data.verified) and !data.verified
+                  if data.access_requested
+                    formBootBox3()
+                  else formBootBox2()
+                  gon.visitor.email = $('form#file_form input#email').val()
+                else
+                  gon.visitor.is_verified = true
+                return
+            else
+              return false
+            return
+    return
+  return
+formBootBox3 = ->
+  $.get gon.get_bootbox3_content_path, (message, status) ->
+    if $('form#file_form').length == 0
+      bootbox.dialog
+        title: 'Your Email Has Been Confirmed. The Tour Request Tour Owner Authorization'
+        message: message
+        backdrop: true
+        closeButton: false
+    return
+  return
+formBootBox4 = (name_required, phone_required, message_required) ->
+  $.post(gon.get_bootbox4_content_path, { name_required: name_required, phone_required: phone_required, message_required: message_required }).done (message, status) ->
+    if $('form#file_form').length == 0
+      bootbox.dialog
+        title: 'Please input following information'
+        message: message
+        backdrop: true
+        closeButton: false
+        buttons: success:
+          label: 'Submit'
+          className: 'btn-success'
+          callback: ->
+            bootbox4_validate()
+            if $('form#file_form').valid()
+              $('div#loading_modal').modal('show')
+              $('form#file_form').ajaxSubmit success: (data) ->
+                $('div#loading_modal').modal('hide')
+                gon.visitor.name = data.result.name
+                gon.visitor.phone = data.result.phone
+                gon.visitor.message = data.result.message
+
+                if gon.visitor.access_requested
+                  formBootBox3()
+                else formBootBox2()
+            else
+              return false
+            return
+    return
+  return
+
+store_visit_time = (type) ->
+  if type == 'new'
+    $.ajax
+      type: 'POST'
+      async: false
+      cache: false
+      url: gon.store_visit_time_path
+      data: {visitor_id: gon.visitor.id, store_type: type}
+      success: (result) ->
+        gon.visitor_log = result.result
+        console.log gon.visitor_log.id
+        return
+      error: (data) ->
+        location.reload()
+        return
+  else
+    $.ajax
+      type: 'POST'
+      async: false
+      cache: false
+      url: gon.store_visit_time_path
+      data: {visitor_log_id: gon.visitor_log.id, store_type: type}
+      success: (result) ->
+        gon.visitor_log = result.result
+        console.log gon.visitor_log.id
+        return
+      error: (data) ->
+        location.reload()
+        return
+
+$(document).ready(ready);
+$(document).on('page:load', ready);

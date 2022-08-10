@@ -1,0 +1,16 @@
+.row.wrapper.border-bottom.white-bg.page-heading
+  .col-lg-10
+    h2 #{ current_admin.agent_type.to_i == 2 ? 'Brokerage Info' : 'Agent Info' }
+    ol.breadcrumb
+      li
+        a href="#"  Home
+      li class=(mode == 'index' ? 'active' : '')
+        = link_to client_navbar_name, client_index_path
+      - if mode != 'index'
+        li.active
+          strong= mode
+.result-notice
+
+- if flash[:notice]
+  .alert.alert-info.custom-alert-margin
+    = flash[:notice]

@@ -1,0 +1,17 @@
+doctype html
+html
+  head
+    meta content=("text/html; charset=UTF-8") http-equiv="Content-Type"
+  body
+    h1
+      | Hi #{@tour.admin.username}
+    h3
+      | One visitor Sent you message
+    h3 Message Content
+    p=@message
+    h3 Visitor Information
+    p Country: #{@visitor.country}
+    p Location: #{@visitor.city}
+    p Ip: #{@visitor.ip_address}
+
+

@@ -1,0 +1,194 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+ *= require_self
+ *= require bootstrap
+ *= require animate
+ *= require style
+ *= require nprogress
+ *= require nprogress-bootstrap
+ *= require plugins/dataTables/dataTables.bootstrap
+ *= require plugins/dataTables/dataTables.responsive
+ *= require plugins/dataTables/dataTables.tableTools.min
+ */
+
+@import "font-awesome";
+@import "wice_grid";
+
+.custom-alert-margin {
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.agent-profile {
+  margin-bottom: 20px;
+}
+.m-l-20 {
+  margin-left: 20px !important
+}
+.border-top-0 {
+  border-top: 0px !important;
+}
+.nav-tabs.custom li.active a, .nav-tabs.custom li.active a:hover, .nav-tabs.custom li.active a:focus {
+  background-color: #FFFFFF;
+  border-color: #dddddd #dddddd rgba(0, 0, 0, 0);
+  cursor: pointer;
+}
+.ibox-content.custom {
+  border-width: 1px 1px;
+  border-color: #ddd;
+  border-top: 0;
+  padding-top: 40px;
+}
+.required {
+  color: #ed5565
+}
+.custom-col-6 {
+  width: 48%;
+  margin-left: 1%;
+  margin-right: 1%;
+  float: left;
+}
+.custom-col-6.alert {
+  padding: 10px;
+  margin-bottom: 15px;
+}
+.head-line {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 7px;
+}
+.clients-table > tbody > tr > td {
+  vertical-align: middle !important;
+}
+
+.fileUpload {
+  position: relative;
+  overflow: hidden;
+}
+.fileUpload input.upload {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0;
+  filter: alpha(opacity=0);
+}
+p.form-control[disabled] {
+  cursor: text;
+}
+.dataTables_paginate ul.pagination {
+  margin: 0 0 10px 0;
+  float: right;
+}
+.dataTables_filter { float: right; }
+.tr-info {
+  color: #31708f !important;
+  background-color: #d9edf7 !important;
+  border-color: #bce8f1 !important;
+}
+.nav-tabs.custom > li > a {
+  padding: 7px 15px;
+  font-weight: 500;
+  font-size: 12px;
+}
+.p-l-0 {
+  padding-left: 0;
+}
+.m-t-0 {
+  margin-top: 0 !important;
+}
+.avatar-circle {
+  width: 70px;
+  height: 70px !important;
+  border-radius: 70px;
+  border: 1px solid #7d7d7d;
+  display: inline-block;
+}
+#approve_access {
+  background: orange
+}
+#interior_iframe {
+  border: none;
+}
+.profile-element .img-circle {
+  width: 70px;
+  height: 70px;
+}
+table.clients-table.dataTable thead .sorting_desc:after {
+  content: ''
+}
+table.clients-table.dataTable {
+  border-bottom: 1px solid #ddd;
+}
+.dataTables_filter input {
+  margin-left: 10px;
+}
+.dataTables_length select {
+  margin-right: 10px;
+  padding: 4px 10px;
+  width: 64px !important;
+}
+table.dataTable thead .sorting_asc {
+  background: image-url('sort_asc.png') no-repeat center right !important;
+}
+
+table.dataTable thead .sorting_desc {
+  background: image-url('sort_desc.png') no-repeat center right !important;
+}
+.navbar-right {
+  margin-right: 0 !important;
+}
+#page-wrapper {
+  min-height: 800px !important;
+  min-width: 1000px !important;
+  overflow-x: auto;
+}
+body {
+  overflow-x: auto !important;
+  min-width: 800px;
+}
+
+.logo-preview, .avatar-preview, .brand-preview, .media-preview { position: relative; }
+.logo-preview a, .avatar-preview a, .brand-preview a, .media-preview a { position: absolute; right: 15px; top: 0; display: none}
+.avatar-preview.image-uploaded:hover a, .logo-preview.image-uploaded:hover a, .brand-preview.image-uploaded:hover a, .media-preview.image-uploaded:hover a {
+  display: block;
+}
+
+.wice-grid tr.wg-filter-row input[type=text] {
+  width: 100%;
+  min-width: 100px;
+}
+
+// data log custom style
+/*
+#g1_f_created_at_fr_date_placeholder, #g1_f_created_at_to_date_placeholder {
+  width: 48%;
+  float:left;
+}
+#g1_f_created_at_fr_date_placeholder input, #g1_f_created_at_to_date_placeholder input{
+  width: 70%;
+  float: left;
+  height: 34px;
+}
+#g1_f_created_at_fr_date_placeholder:after {
+  content: 'to';
+  padding: 5px 7px;
+  line-height: 34px;
+  font-size: 13px;
+}*/

@@ -1,0 +1,9 @@
+= render :partial => 'backend/navbar'
+#page-wrapper.gray-bg
+  = render :partial => 'backend/topbar'
+  - if flash[:notice]
+    .alert.alert-info.custom-alert-margin
+      = flash[:notice]
+  .wrapper.wrapper-content.animated.fadeInRight
+    .ibox.float-e-margins
+      h4 There is no Tour

@@ -1,0 +1,69 @@
+.row
+  .col-md-12.form-horizontal
+    .alert.alert-info
+      | Please Confirm Your Email in Mailbox
+    h4.text-center Haven't Received any Email?
+    .form-group.text-center
+      a.btn.btn-primary#resend_email href='#' onclick="resend_email(this)" Resend Email
+    = form_tag subscribe_visitor_path(@tour.id), :id => 'file_form', :class => 'form-horizontal' do
+      = hidden_field_tag "visitor_id", @visitor.id
+      h4.text-center or Enter Another Email
+      .form-group
+        .col-md-12
+          = text_field_tag "email", nil, placeholder: "Your email", class: 'form-control input-md'
+
+javascript:
+  // bootbox 2 validate
+  var bootbox2_validate = function() {
+    $("form#file_form").validate({
+      errorClass: 'help-block animation-slideUp', // You can change the animation class for a different entrance animation - check animations page
+      errorElement: 'div',
+      errorPlacement: function(error, e) {
+        e.parents('.form-group > div').append(error);
+      },
+      highlight: function(e) {
+        $(e).closest('.form-group').removeClass('has-success has-error').addClass('has-error');
+        $(e).closest('.help-block').remove();
+      },
+      success: function(e) {
+        e.closest('.form-group').removeClass('has-success has-error');
+        e.closest('.help-block').remove();
+      },
+      rules: {
+        email: {
+          required: true,
+          email: true
+        }
+      },
+
+      //Messages for form validation
+      messages: {
+        email: {
+          required: 'Please enter email'
+        }
+      }
+    });
+  };
+
+  // resend email onclick event
+  function resend_email(obj)
+  {
+    var thisObj = $(obj);
+    thisObj.text('Processing ...');
+    var request = $.ajax({
+      url: "#{@resend_email_path}",
+      type: 'POST',
+      data: {visitor_id: $("input#visitor_id").val()},
+      dataType: 'json'
+    });
+    request.done(function (data) {
+      if (data)
+        var tmpHtml = '<span class="label label-info m-l">Sent</span>';
+      thisObj.parent().append(tmpHtml);
+      thisObj.text('Resend Email');
+      setTimeout(function() {thisObj.parent().find('span').fadeOut("slow").remove()}, 1500)
+    });
+    request.fail(function (jqXHR, textStatus) {
+      console.log(textStatus)
+    });
+  }

@@ -1,0 +1,13 @@
+doctype html
+html
+  head
+    meta content=("text/html; charset=UTF-8") http-equiv="Content-Type"
+  body
+    h1
+      | Hi #{@email}
+    p
+      | Thanks for your subscribe
+      br
+    - if @is_email_confirm
+      h4
+        | Please click #{link_to "here", :controller => "home", :action => "confirm_email_by_token", :only_path => false, :token => @token, :id => @visitor.tour_id, :host => "webplayer-controls.herokuapp.com"} to verify your account

@@ -1,0 +1,132 @@
+.error-message
+= form_for(@approved_email, :url => @store_path, :html => {:class => 'form-horizontal approved-email-form', :multipart => true}) do |f|
+
+  .form-group
+    = f.label :email, :class => 'control-label col-sm-2' do
+      | Email
+      span.required  *
+    .col-sm-7
+      = f.text_field :email, :class => 'form-control'
+    .col-sm-3.text-right
+      = button_tag(type: 'button', class: "btn btn-primary store-approved-email m-r") do
+        = @mode
+      = button_tag(type: 'button', class: "btn btn-danger cancel-edit #{@mode=='Create' ? 'hide' : ''}")
+        |  Cancel
+    = hidden_field_tag "approved_email_id", @approved_email.id
+
+.approved-email-tables
+  table.table.table-striped.table-bordered.table-hover.approved-email-table
+    thead
+      tr
+        th Email
+        th Added Date
+        th #
+    tbody
+      - @approved_emails.order(created_at: 'DESC').each do |email|
+        tr
+          td= email.email
+          td= email.created_at
+          td
+            = link_to "#", :class => 'btn btn-info btn-xs', :id => 'edit_row', 'data-id' => email.id, 'data-email' => email.email do
+              i.fa.fa-edit Edit
+            - if current_admin.super?
+              = link_to tour_delete_approved_email_path(:id => @tour.id, :approved_email_id => email.id), :id => 'delete_row', :class => 'btn btn-danger btn-xs m-l-sm', confirm: "Are you sure?" do
+                i.fa.fa-trash-o Delete
+            - else
+              = link_to delete_approved_email_path(:id => @tour.id, :approved_email_id => email.id), :id => 'delete_row', :class => 'btn btn-danger btn-xs m-l-sm', confirm: "Are you sure?" do
+                i.fa.fa-trash-o Delete
+
+javascript:
+  var approved_email_table;
+
+  var event_row = function () {
+    $('a#edit_row').unbind('click').click(function (e) {
+      e.preventDefault();
+      $('table.approved-email-table tr').removeAttr('class');
+      $(this).closest('tr').attr('class', 'tr-info');
+      $("input#approved_email_id").val($(this).data("id"));
+      $("input#approved_email_email").val($(this).data("email"));
+      $("button.cancel-edit").removeClass('hide');
+      $("button.store-approved-email").text('Update');
+    });
+
+    $('a#delete_row').unbind('click').click(function (e) {
+      var thisObj = $(this);
+      e.preventDefault();
+      $('div.error-message').html('');
+      var request;
+
+      request = $.ajax($(this).attr('href'), {
+        type: 'POST',
+        data: {},
+        dataType: 'json'
+      });
+
+      request.done(function (data) {
+        if (data.result == 'success') {
+          var tmpHtml = '<div class="alert alert-info" role="alert">' + 'Removed successfully' + '</div>';
+          $('div.error-message').html(tmpHtml);
+
+          approved_email_table.api()
+                  .row(thisObj.parents('tr'))
+                  .remove()
+                  .draw();
+        }
+      });
+
+      request.fail(function (jqXHR, textStatus) {
+        return console.log(textStatus);
+      });
+    })
+  };
+
+  $(function() {
+    approved_email_table = $('.approved-email-table').dataTable({
+      responsive: true
+    });
+
+    event_row();
+
+    $("button.store-approved-email").click(function() {
+
+      $('div.error-message').html('');
+      $("form.approved-email-form").ajaxSubmit({
+        success: function (data) {
+          console.log(data);
+          if (data.mode == 'Create') {
+            approved_email_table.api().row.add([
+              data.approved_email.email,
+              data.approved_email.created_at,
+              data.html_tag
+            ]).draw(false);
+          } else {
+            $('table.approved-email-table tr.tr-info').find('td').eq(0).text(data.approved_email.email);
+            $('table.approved-email-table tr.tr-info').find('td').eq(1).text(data.approved_email.updated_at);
+            $('button.cancel-edit').click();
+          }
+
+          event_row();
+
+          $("form.approved-email-form input").val("");
+          //$.get("/backend/visitors_log/" + "#{@tour.id}" + "/get_approved_email_table_row/" + data.id, function (message, status) {
+              //$("table.approved-email-table tbody").prepend(message);
+              //$("form.approved-email-form input").val("");
+          //});
+        }, error: function(response) {
+          var errors = JSON.parse(response.responseText);
+          var tmpHtml = "";
+          for (index in errors)
+            tmpHtml += '<div class="alert alert-danger" role="alert">' + errors[index] + '</div>';
+          $('div.error-message').html(tmpHtml);
+        }
+      });
+    });
+
+    $('button.cancel-edit').click(function() {
+      $('table.approved-email-table tr').removeAttr('class');
+      $("input#approved_email_id").val('');
+      $("input#approved_email_email").val('');
+      $("button.cancel-edit").addClass('hide');
+      $("button.store-approved-email").text('Create');
+    });
+  });

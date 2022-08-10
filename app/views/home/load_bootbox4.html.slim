@@ -1,0 +1,60 @@
+.row
+  .col-md-12
+    = form_tag add_information_visitor_path(@tour.id), :id => 'file_form', :class => 'form-horizontal' do
+      = hidden_field_tag "visitor_id", @visitor.id
+      - if @name_required.to_s == 'true'
+        .form-group
+          = text_field_tag "name", nil, placeholder: "Your name", class: 'form-control input-md'
+      - if @phone_required.to_s == 'true'
+        .form-group
+          = text_field_tag "phone", nil, placeholder: "Your phone", class: 'form-control input-md'
+      - if @message_required.to_s == 'true'
+        .form-group
+          = text_area_tag "message", nil, placeholder: "Your message", class: 'form-control input-md', :rows => 5
+
+
+javascript:
+  var bootbox4_validate = function () {
+    $("form#file_form").validate({
+      errorClass: 'help-block animation-slideUp', // You can change the animation class for a different entrance animation - check animations page
+      errorElement: 'div',
+      errorPlacement: function (error, e) {
+        e.parents('.form-group').append(error);
+      },
+      highlight: function (e) {
+        $(e).closest('.form-group').removeClass('has-success has-error').addClass('has-error');
+        $(e).closest('.help-block').remove();
+      },
+      success: function (e) {
+        e.closest('.form-group').removeClass('has-success has-error');
+        e.closest('.help-block').remove();
+      },
+      rules: {
+        name: {
+          required: true
+        },
+        message: {
+          required: true
+        },
+        phone: {
+          required: true
+        }
+      },
+
+      //Messages for form validation
+      messages: {
+        email: {
+          required: 'Please enter email'
+        },
+        name: {
+          required: 'Please enter your name'
+        },
+        message: {
+          required: 'Please enter message'
+        },
+        phone: {
+          required: 'Please enter your phone number'
+        }
+      }
+    });
+  };

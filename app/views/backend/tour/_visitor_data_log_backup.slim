@@ -1,0 +1,55 @@
+table.table.table-striped.table-bordered.table-hover.visitor-table
+  thead
+    tr
+      th #
+      th Visit Date
+      th Visit Time
+      th IP
+      th Location
+      th Country
+      th Browser
+      th Email
+      th Duration Time(sec)
+      th Access Requested
+      th Access Approval
+      th
+  tbody
+    - @tour.visitor.each do |visitor|
+      - visitor.visitor_log.order(created_at: 'DESC').each do |visitor_log|
+        tr
+          td= visitor.id
+          td= visitor_log.created_at.to_date
+          td= visitor_log.created_at.strftime("%I:%M%p")
+          td= visitor.ip_address
+          td
+            = link_to '#', :class=>'visitor-location', 'data-lat' => "#{visitor.latitude}", 'data-lon' => "#{visitor.longitude}" do
+              i.fa.fa-map-marker
+              span  #{visitor.city}
+          td= visitor.country
+          td= visitor.browser
+          td= visitor.visitor_email.email if visitor.visitor_email
+          td= visitor_log.duration_time
+          td
+            - if visitor.visitor_email
+              = visitor_log.access_requested ? 'yes': ''
+          td
+            - if visitor.visitor_email and visitor.is_verified
+              span.label.label-primary Approved Access
+            - elsif @tour.restrict_option.agent_approval and visitor_log.access_requested
+              button.btn.btn-warning.btn-xs#approve_access data-visitor_id="#{visitor.id}" Approve
+          td
+            - if current_admin.super?
+              = link_to "Detail", tour_visitor_log_detail_path(:visitor_id => visitor.id), :class => 'btn btn-info btn-xs'
+            - else
+              = link_to "Detail", visitor_log_detail_path(:visitor_id => visitor.id), :class => 'btn btn-info btn-xs'
+
+= link_to "Pre-Approved Emails List", tour_approved_list_path(@tour.id), :class => 'btn btn-primary'
+
+javascript:
+  $(function() {
+    $('.visitor-table').dataTable({
+      responsive: true
+    });
+  });
+
+

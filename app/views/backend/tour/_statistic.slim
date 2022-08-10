@@ -1,0 +1,278 @@
+.row
+  .col-sm-6
+    h4 Tour Views
+
+    .btn-group.m-b#view_tabs role="group"
+      button.btn.btn-primary#go_day_tab Day
+      button.btn.btn-default.btn-outline#go_week_tab Week
+      button.btn.btn-default.btn-outline#go_month_tab Month
+      button.btn.btn-default.btn-outline#go_custom_tab Custom
+    .tab-content#view_tabs_content
+      .tab-pane.active#day_report_tab style="width: 100%;"
+        table.table.table-bordered
+          tr
+            th Page View
+            th Average Time
+          tr
+            td= @visitors_date_average.to_i
+            td= @date_average_time
+        #day-view-container style="width: 100%;  height: 250px;"
+      .tab-pane#week_report_tab
+        table.table.table-bordered
+          tr
+            th Page View
+            th Average Time
+          tr
+            td= @visitors_week_average.to_i
+            td= @week_average_time
+        #week-view-container style="width: 100%;  height: 250px;"
+      .tab-pane#month_report_tab
+        table.table.table-bordered
+          tr
+            th Page View
+            th Average Time
+          tr
+            td= @visitors_month_average.to_i
+            td= @month_average_time
+        #month-view-container style="width: 100%;  height: 250px;"
+      .tab-pane#custom_report_tab
+        .row
+          .col-md-8
+            .input-daterange.input-group.m-b-md#datepicker
+              input.input-sm.form-control type="text" name="start_date"
+              span.input-group-addon to
+              input.input-sm.form-control type="text" name="end_date"
+          .col-md-4
+            button.btn.btn-info.btn-sm#custom_submit Go
+        table.table.table-bordered
+          tr
+            th Page View
+            th Average Time
+          tr
+            td#page_view
+            td#average_time
+        #custom-view-container style="width: 100%;  height: 250px;"
+  .col-sm-6
+.well
+  .row
+    .col-sm-4
+      h4 Demographics
+      ul.nav.nav-tabs-left role="tablist"
+        li.active
+          a href="#country_tab" role="tab" data-toggle="tab" Country
+        li role="tab"
+          a href="#city_tab" role="tab" data-toggle="tab" City
+    .col-sm-8
+      .tab-content.statistic-tab
+        .tab-pane.active#country_tab
+          table.table
+            tr
+              th.no-borders
+                h4 Country
+              th.no-borders
+                h4 Sessions
+              th.no-borders
+                h4 % Sessions
+              th.no-borders
+                h4 Average duration
+              th.no-borders
+                h4 Min duration
+              th.no-borders
+                h4 Max duration
+            tr
+            - @country_group.each do |group|
+              tr
+                td= group.country
+                td= group.count
+                td #{'%.2f' % (group.count.to_f * 100 / @visitor_logs.count)}
+                td= Time.at(group.duration_time).utc.strftime("%H:%M:%S")
+                td= Time.at(group.min_duration_time).utc.strftime("%H:%M:%S")
+                td= Time.at(group.max_duration_time).utc.strftime("%H:%M:%S")
+        .tab-pane#city_tab
+          table.table
+            tr
+              th.no-borders
+                h4 City
+              th.no-borders
+                h4 Login Sessions
+              th.no-borders
+                h4 % Sessions
+              th.no-borders
+                h4 Average duration
+              th.no-borders
+                h4 Min duration
+              th.no-borders
+                h4 Max duration
+            tr
+            - @city_group.each do |group|
+              tr
+                td= group.city
+                td= group.count
+                td #{'%.2f' % (group.count.to_f * 100 / @visitor_logs.count)}
+                td= Time.at(group.duration_time).utc.strftime("%H:%M:%S")
+                td= Time.at(group.min_duration_time).utc.strftime("%H:%M:%S")
+                td= Time.at(group.max_duration_time).utc.strftime("%H:%M:%S")
+
+javascript:
+  $(function () {
+    $('#day-view-container').highcharts({
+      chart: {
+        type: 'areaspline',
+      },
+      title: {
+        text: ''
+      },
+      xAxis: {
+        categories: #{ raw @log_day_dates.as_json }
+      },
+      yAxis: {
+        title: {
+          text: ''
+        }
+      },
+      credits: {
+        enabled: false
+      },
+      series: [{
+        name: 'Visitors',
+        data: #{ raw @log_day_data.as_json }
+      }]
+    });
+
+    $('.input-daterange').datepicker({
+      format: 'yyyy-mm-dd',
+      keyboardNavigation: false,
+      forceParse: false,
+      autoclose: true
+    });
+    $("button#go_day_tab").click(function() {
+      view_switcher($(this), $("div#day_report_tab"))
+    });
+
+    $("button#go_week_tab").click(function () {
+      view_switcher($(this), $("div#week_report_tab"))
+      week_highchart();
+    });
+
+    $("button#go_month_tab").click(function () {
+      view_switcher($(this), $("div#month_report_tab"))
+      month_highchart();
+    });
+
+    $("button#go_custom_tab").click(function () {
+      view_switcher($(this), $("div#custom_report_tab"))
+    });
+
+    $('button#custom_submit').click(function () {
+      if ($("input[name='end_date']").val() == '' || $("input[name='start_date']").val() == '')
+        return false;
+
+      var request = $.ajax("#{@view_custom_by_date}", {
+        type: 'POST',
+        data: {
+          tour_id: #{@tour.id},
+          start_date: $("input[name=start_date]").val(),
+          end_date: $("input[name=end_date]").val()
+        },
+        dataType: 'json'
+      });
+
+      request.done(function (data) {
+        var page_views = isNaN(Number(data.date_average).toFixed(0)) ? 0 : Number(data.date_average).toFixed(0)
+        $('td#page_view').text(page_views);
+        $('td#average_time').text(data.average_time);
+        custom_highchart(data.log_day_dates, data.log_day_data);
+      });
+
+      request.fail(function (jqXHR, textStatus) {
+        return console.log(textStatus);
+      });
+    });
+  });
+  function view_switcher(tabObj, tabContentObj) {
+    $("div#view_tabs button").removeClass('btn-primary btn-default').addClass('btn-default btn-outline');
+    tabObj.removeClass('btn-default btn-outline').addClass('btn-primary');
+    $("div#view_tabs_content div.tab-pane").removeClass('active');
+    tabContentObj.removeClass('active').addClass('active')
+  }
+  function week_highchart() {
+    $('#week-view-container').highcharts({
+      chart: {
+        type: 'areaspline'
+      },
+      title: {
+        text: ''
+      },
+      xAxis: {
+        categories: #{ raw @log_week_dates.as_json }
+      },
+      yAxis: {
+        title: {
+          text: ''
+        }
+      },
+      credits: {
+        enabled: false
+      },
+      series: [{
+        name: 'Visitors',
+        data: #{ raw @log_week_data.as_json }
+      }]
+    });
+  }
+
+  function month_highchart() {
+    $('#month-view-container').highcharts({
+      chart: {
+        type: 'areaspline'
+      },
+      title: {
+        text: ''
+      },
+      xAxis: {
+        categories: #{ raw @log_month_dates.as_json }
+      },
+      yAxis: {
+        title: {
+          text: ''
+        }
+      },
+      credits: {
+        enabled: false
+      },
+      series: [{
+        name: 'Visitors',
+        data: #{ raw @log_month_data.as_json }
+      }]
+    });
+  }
+  function custom_highchart(date, data) {
+    $('#custom-view-container').highcharts({
+      chart: {
+        type: 'areaspline'
+      },
+      title: {
+        text: ''
+      },
+      xAxis: {
+        categories: date
+      },
+      yAxis: {
+        title: {
+          text: ''
+        }
+      },
+      credits: {
+        enabled: false
+      },
+      series: [{
+        name: 'Visitors',
+        data: data
+      }]
+    });
+  }
+  function decodeHtml(html) {
+    var txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+  }

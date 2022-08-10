@@ -1,0 +1,16 @@
+= render :partial => 'backend/navbar'
+#page-wrapper.gray-bg
+  = render :partial => 'backend/topbar'
+  = render :partial => 'backend/admin/head', :locals => { :mode => 'add'}
+  .wrapper.wrapper-content.animated.fadeInRight
+    = admin_error_messages!
+    .row
+      .col-lg-12.m-b-sm
+        = link_to client_index_path, :class => 'btn btn-w-m btn-primary pull-right' do
+          i.fa.fa-long-arrow-left
+          |  Back
+    .ibox.float-e-margins
+      .ibox-title
+        h5 Add Client
+      .ibox-content
+        = render :partial => 'form', locals: {remote: false}

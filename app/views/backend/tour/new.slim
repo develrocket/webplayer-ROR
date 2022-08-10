@@ -1,0 +1,29 @@
+= render :partial => 'backend/navbar'
+#page-wrapper.gray-bg
+  = render :partial => 'backend/topbar'
+  .row.wrapper.border-bottom.white-bg.page-heading
+    .col-lg-10
+      h2 Tours
+      ol.breadcrumb
+        li
+          a href="#"  Home
+        li
+          = link_to "Tours", tour_index_path
+        li.active
+          a href="#"
+            strong Add Tour
+  - if flash[:notice]
+    .alert.alert-info.custom-alert-margin
+      = flash[:notice]
+  .wrapper.wrapper-content.animated.fadeInRight
+    = tour_error_messages!
+    .row
+      .col-lg-12.m-b-sm
+        = link_to tour_index_path, :class => 'btn btn-w-m btn-primary pull-right' do
+          i.fa.fa-long-arrow-left
+          |  Back
+    .ibox.float-e-margins
+      .ibox-title
+        h5 Add Tour - Webplayer Basic
+      .ibox-content
+        = render :partial => 'backend/tour/webplayer_basic'

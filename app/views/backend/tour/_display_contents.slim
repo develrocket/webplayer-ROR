@@ -1,0 +1,27 @@
+= form_for(@tour, :url => @store_path, remote: true, :html => {:class => 'form-horizontal edit-display-content', multipart: true}) do |f|
+  = fields_for :display_option, @tour.display_option do |f|
+    .form-group
+      = f.label "Content Layers", :class => 'control-label col-sm-2'
+      .col-sm-10
+        .checkbox
+          label
+            = f.check_box :show_birds_eye
+            | Show Bird's Eye View
+        .checkbox
+          label
+            = f.check_box :show_aerial
+            | Show Aerial View
+        .checkbox
+          label
+            = f.check_box :show_exterior_walkin
+            | Show Exterior WALKINTOUR
+        .checkbox
+          label
+            = f.check_box :show_detach_unit
+            | Show Detached Unit
+    .hr-line-dashed
+    .form-group
+      .col-sm-offset-2.col-sm-9.text-right
+        = button_tag(type: 'submit', class: "btn btn-primary") do
+          i.fa.fa-check-circle
+          |  Save & Update

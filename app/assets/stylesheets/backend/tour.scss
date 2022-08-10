@@ -1,0 +1,18 @@
+// Place all the styles related to the backend/tour controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+/*
+*= require 'plugins/switchery/switchery'
+*/
+.text-left { text-align: left !important;}
+.brand-preview img, .tour-preview img  {
+  height: auto;
+  max-height: 200px;
+}
+.avatar-preview {
+  margin-bottom: 20px;
+}
+.media-preview img, .logo-preview img {
+  height: auto;
+  max-height: 350px;
+}

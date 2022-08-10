@@ -1,0 +1,45 @@
+= form_for(@tour, :url => @store_path, data: { type: :json }, :html => {:class => 'form-horizontal edit-tour-branding', multipart: true}, :remote => true) do |f|
+  .row
+    .col-sm-12
+      = fields_for :webplayer_basic, @tour.webplayer_basic do |f1|
+        .form-group
+          = f1.label :url, "Branded URL", :class => 'control-label col-sm-2'
+          .col-sm-9
+            p.form-control disabled="disabled" style="height: auto; min-height: 34px;"
+              = get_url_for_branded(@tour, 2)
+
+        .form-group
+          = f1.label :embed_code, "Branded Embed Code", :class => 'control-label col-sm-2'
+          .col-sm-9
+            p.form-control disabled="disabled" style="height: auto; min-height: 34px;"
+              = get_embed_code_for_branded(@tour, 2)
+        .hr-line-dashed
+  .row
+    = fields_for :tour_branding, @tour.tour_branding do |f1|
+      .form-group
+        = f1.label :is_logo_show, "Tour Logo", :class => 'control-label col-sm-2'
+        .col-sm-1
+          = f1.check_box :is_logo_show, :class => 'js-switch1'
+        .col-sm-3.logo-preview class="#{@tour.tour_branding.logo.blank? ?  '' : 'image-uploaded'}"
+          = image_tag @tour.tour_branding.logo.url, :class => 'img-responsive full-width'
+          = link_to content_tag('i', '', :class => "fa fa-trash-o"), '#', :class => 'btn btn-danger btn-xs remove-avatar', 'data-id' => @tour.id
+        .col-sm-6
+          .row.m-b
+            .fileUpload.btn.btn-success.col-md-3
+              span Change Logo
+              = f1.file_field :logo, type: :file, :class => 'upload', :accept => 'image/*'
+          /.row
+          /  = f1.label :logo_height, "Height:", :class => 'control-label pull-left'
+          /  .col-sm-3
+          /    = f1.text_field :logo_height, :class => 'form-control'
+          /  = f1.label :logo_width, "Width:", :class => 'control-label pull-left'
+          /  .col-sm-3
+          /    = f1.text_field :logo_width, :class => 'form-control'
+      .hr-line-dashed
+  .form-group
+    .col-sm-offset-2.col-sm-9.text-right
+      = button_tag(type: 'submit', class: "btn btn-primary btn-submit") do
+        i.fa.fa-check-circle
+        |  Save & Update
+coffee:
+  new TourBranding

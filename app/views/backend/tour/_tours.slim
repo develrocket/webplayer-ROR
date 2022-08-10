@@ -1,0 +1,39 @@
+.ibox-title
+  h5 Tours
+.ibox-content
+  table.table.table-striped.table-hover.clients-table
+    thead
+      tr
+        th #
+        th Address
+        - if current_admin.agent_type == 3 || current_admin.super?
+          th.user-profile width="120px"
+          th Client
+        th Added Date
+        th width="150px"
+    tbody
+      - @tours.each do |tour|
+        tr
+          td= tour.id
+          td= link_to tour.webplayer_basic.tour_address, current_admin.super? ? tour_edit_webplayer_basic_path(tour.id) : webplayer_basic_index_path(tour.id)
+          - if current_admin.agent_type == 3 || current_admin.super?
+            td
+              - if tour.admin
+                = image_tag tour.admin.agent_type.to_i == 3 ? tour.admin.agent_info.company.logo.url : tour.admin.agent_info.small_avatar_url, :class => 'img-responsive avatar-circle'
+            td
+              - if tour.admin
+                h5.no-margins style="padding: 5px 0;"
+                  - if current_admin.super?
+                    = link_to tour.admin.username, client_edit_path(tour.admin.id)
+                  - else
+                    = tour.admin.username
+          td= tour.created_at.to_date
+          td.text-center
+            - if current_admin.super?
+              = link_to tour_edit_webplayer_basic_path(tour.id), :class=> 'btn btn-info btn-xs' do
+                i.fa.fa-edit  Edit
+              = link_to tour_delete_path(tour.id), method: :delete, :class => 'btn btn-danger btn-xs m-l-sm delete-tour', :confirm => "Are you sure?" do
+                i.fa.fa-trash-o  Delete
+            - else
+              = link_to webplayer_basic_index_path(tour.id), :class=> 'btn btn-info btn-xs' do
+                i.fa.fa-edit  Edit

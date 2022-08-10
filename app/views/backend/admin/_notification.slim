@@ -1,0 +1,16 @@
+= form_for(@admin, :url => @store_path, :html => {:class => 'form-horizontal edit-notification', multipart: true}, remote:true) do |f|
+  .row
+    .col-sm-12
+      = fields_for :notification, @admin.notification do |f1|
+        .form-group
+          = f1.label :url, "Send Email Notification for New Messages", :class => 'control-label col-sm-4'
+          .col-sm-8
+            = f1.check_box :message, :class => 'message-checkbox'
+        .hr-line-dashed
+        .form-group
+          .col-sm-offset-2.col-sm-10.text-right
+            = button_tag(type: 'submit', class: 'btn btn-primary') do
+              i.fa.fa-check-circle
+              |  Save & Update
+coffee:
+  new Notification

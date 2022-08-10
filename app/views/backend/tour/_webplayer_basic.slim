@@ -1,0 +1,120 @@
+= form_for(@tour, :url => @store_path, data: { type: :json }, :html => {:class => 'form-horizontal edit-webplayer-basic', :multipart => true}, remote: @remote) do |f|
+
+  = fields_for :webplayer_basic, @tour.webplayer_basic do |f1|
+    .form-group
+      = f1.label :tour_address, :class => 'control-label col-sm-2' do
+        | Tour Address
+        span.required  *
+      .col-sm-9
+        = f1.text_field :tour_address, :class => 'form-control'
+    .form-group
+      = f1.label :matterport_link, :class => 'control-label col-sm-2' do
+        | Matterport link
+        span.required  *
+      .col-sm-9
+        = f1.text_field :matterport_link, :class => 'form-control'
+    .form-group
+      = f1.label :exterior_link, :class => 'control-label col-sm-2'
+      .col-sm-9
+        = f1.text_field :exterior_link, :class => 'form-control'
+    .form-group
+      = f1.label :default_unit_name, :class => 'control-label col-sm-2'
+      .col-sm-9
+        = f1.text_field :default_unit_name, :class => 'form-control'
+    .form-group
+      .col-sm-2
+        = link_to "#", :class => 'btn btn-w-m btn-primary pull-right add-detach' do
+          i.fa.fa-plus
+          |  Detach Unit
+      .col-sm-9
+        .row.detach-wrap
+          - @tour.detach_unit.each do |unit|
+            .detach-row
+              .col-md-4
+                input#detach_unit_address.form-control.m-b placeholder="Address" name="detach_unit_address[]" value="#{unit.address}"
+              .col-md-7
+                input#detach_unit_link.form-control.m-b placeholder="Link" name="detach_unit_link[]" value="#{unit.link}"
+              .col-md-1
+                button.btn.btn-danger.btn-sm onclick="delete_detach_unit(this)" type="button"
+                  i.color-danger.fa.fa-trash-o
+
+
+    .form-group
+      = f1.label :height, :class => 'control-label col-sm-2' do
+        | Player Height
+        span.required  *
+      .col-sm-2
+        = f1.text_field :height, :class => 'form-control'
+      = f1.label :height, :class => 'control-label col-sm-1' do
+        | Width
+        span.required  *
+      .col-sm-2
+        = f1.text_field :width, :class => 'form-control'
+    .form-group
+      = f1.label :is_brand_show, "Tour Branding" , :class => 'control-label col-sm-2'
+      .col-sm-1
+        = f1.check_box :is_brand_show, :class => 'js-switch1'
+      .col-sm-3.brand-preview class="#{ (@tour.webplayer_basic && @tour.webplayer_basic.brand.blank?) ? '' : 'image-uploaded'}"
+        = link_to content_tag('i', '', :class => "fa fa-trash-o"), '#', :class => 'btn btn-danger btn-xs remove-avatar', 'data-id' => @tour.id
+        - if @tour.webplayer_basic.present?
+          = image_tag @tour.webplayer_basic.brand.url, :class => 'img-responsive full-width'
+        - else
+          = image_tag 'walkintour-logo.png', :class => 'img-responsive full-width'
+      .col-sm-6
+        .row.m-b
+          .fileUpload.btn.btn-success.col-md-3
+            span Change Logo
+            = f1.file_field :brand, type: :file, :class => 'upload', :accept => 'image/*'
+        /.row
+        /  = f1.label :brand_height, "Height:" , :class => 'control-label pull-left'
+        /  .col-sm-3
+        /    = f1.text_field :brand_height, :class => 'form-control'
+        /  = f1.label :brand_height, "Width:" , :class => 'control-label pull-left'
+        /  .col-sm-3
+        /    = f1.text_field :brand_width, :class => 'form-control'
+    .form-group
+      = f1.label :is_media_show, "Tour Ad" , :class => 'control-label col-sm-2'
+      .col-sm-1
+        = f1.check_box :is_media_show, :class => 'js-switch2'
+      .col-sm-3.media-preview class="#{ (@tour.webplayer_basic && @tour.webplayer_basic.media.blank?) ? '' : 'image-uploaded'}"
+        = link_to content_tag('i', '', :class => "fa fa-trash-o"), '#', :class => 'btn btn-danger btn-xs remove-avatar', 'data-id' => @tour.id
+        - if @tour.webplayer_basic.present?
+          = image_tag @tour.webplayer_basic.media.url, :class => 'img-responsive full-width'
+        - else
+          = image_tag 'grey-box.png', :class => 'img-responsive full-width'
+      .col-sm-6
+        .row.m-b-sm
+          .fileUpload.btn.btn-success.col-md-4
+            span Change PhotoMedia
+            = f1.file_field :media, type: :file, :class => 'upload', :accept => 'image/*'
+        /.row.m-b-sm
+        /  = f1.label :media_height, "Height:" , :class => 'control-label pull-left'
+        /  .col-sm-3
+        /    = f1.text_field :media_height, :class => 'form-control'
+        /  = f1.label :media_height, "Width:" , :class => 'control-label pull-left'
+        /  .col-sm-3
+        /    = f1.text_field :media_width, :class => 'form-control'
+        .row
+          = f1.label :ad_link, "URL:", :class => 'control-label pull-left'
+          .col-sm-6
+            = f1.text_field :ad_link, :class => 'form-control'
+    .hr-line-dashed
+    .form-group
+      = f1.label :url, "URL" , :class => 'control-label col-sm-2'
+      .col-sm-9
+        p.form-control disabled="disabled" style="height: auto; min-height: 34px;"
+          = get_url_for_webplayer(@tour)
+
+    .form-group
+      = f1.label :embed_code, "Embed Code", :class => 'control-label col-sm-2'
+      .col-sm-9
+        p.form-control disabled="disabled" style="height: auto; min-height: 34px;"
+          = get_embed_code_for_webplayer(@tour)
+    .hr-line-dashed
+    .form-group
+      .col-sm-offset-2.col-sm-9.text-right
+        = button_tag(type: 'submit', class: "btn btn-primary") do
+          i.fa.fa-check-circle
+          |  Save & Update
+coffee:
+  new WebplayerBasic
